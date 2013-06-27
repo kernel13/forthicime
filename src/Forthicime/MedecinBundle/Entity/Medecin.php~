@@ -1,0 +1,217 @@
+<?php
+
+namespace Forthicime\MedecinBundle\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * Medecin
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class Medecin implements UserInterface
+{
+
+    /**
+    * @ORM\OneToMany(targetEntity="ForthicimeDossierBundle:Dossier", mappedBy="medecin")
+    */
+    private $dossiers;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=255)
+     */
+    private $nom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="identifiant", type="string", length=255)
+     */
+    private $identifiant;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=255)
+     */
+    private $password;
+
+    /**
+     * @var timestamp
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="timestamp")
+     */
+    private $created;
+
+    /**
+     * @var timestamp
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated", type="timestamp")
+     */
+    private $updated;
+
+
+    public function __construct()
+    {
+        $this->dossiers = new ArrayCollection();
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nom
+     *
+     * @param string $nom
+     * @return Medecin
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+    
+        return $this;
+    }
+
+    /**
+     * Get nom
+     *
+     * @return string 
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set identifiant
+     *
+     * @param string $identifiant
+     * @return Medecin
+     */
+    public function setIdentifiant($identifiant)
+    {
+        $this->identifiant = $identifiant;
+    
+        return $this;
+    }
+
+    /**
+     * Get identifiant
+     *
+     * @return string 
+     */
+    public function getIdentifiant()
+    {
+        return $this->identifiant;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     * @return Medecin
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    
+        return $this;
+    }
+
+    /**
+     * Get password
+     *
+     * @return string 
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \timestamp $created
+     * @return Medecin
+     */
+    public function setCreated(\timestamp $created)
+    {
+        $this->created = $created;
+    
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \timestamp 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \timestamp $updated
+     * @return Medecin
+     */
+    public function setUpdated(\timestamp $updated)
+    {
+        $this->updated = $updated;
+    
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \timestamp 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+      public function getRoles()
+    {
+        return array('ROLE_ADMIN');
+    }
+
+    public function getSalt()
+    {
+    }
+
+    public function getUsername()
+    {
+        return $this->identifiant;
+    }
+
+    public function eraseCredentials()
+    {
+    }
+}

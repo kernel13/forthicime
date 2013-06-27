@@ -1,0 +1,170 @@
+body{
+	background-color: #0b0b0b;
+	padding-top: 250px;
+}
+
+
+/*==================	SITE HEADER		==================*/
+#siteHeader{
+	height: 270px;	
+	background-color: rgba(64, 69, 97, 0.9);
+	font-size: 10px;
+}
+
+#siteHeader img{
+	z-index: 1000;
+}
+
+#siteHeader hr{
+position: absolute; 
+	top: 85px;
+	width: 100%;
+	height: 20px;
+	background-color: #cbd9ee;
+	z-index: -1000;
+	left: 0;
+}
+
+#laboTitle, #doctorTitle{
+	position: absolute;
+	color: white;
+	font-family: 'Pathway Gothic One', sans-serif;
+	font-size: 20pt;
+}
+
+#laboTitle{	
+	right: 100px;
+	top: 135px;
+}
+
+#doctorTitle{
+	right: 10px;
+	top: 10px;
+}
+
+#banner-footer{
+ 	background-color: #2f334b;
+}
+
+.hide-banner{
+	float: right; 
+	color: white; 
+	font-weight: bold; 
+	font-size: 20pt; 
+	margin-top: 10px; 
+	cursor:pointer;
+}
+
+/*==================	SITE MENU	==================*/
+#menu {
+	margin-top: 10px;
+}
+
+#menu span{
+	margin-left: 30px;
+}
+
+#menu a{
+	color: white;
+	font-size: 1em;
+}
+
+#menu img{
+	width: 80px;
+	height: 80px;
+}
+
+#menuInfoBar{
+	color: #ffcd41;
+	margin-top: 10px;
+	font-size: 12px;
+	float: left;
+}
+
+/*==================	SITE DOCUMENT	==================*/
+#document{
+	margin-top: 70px;
+	
+}
+
+/*================== PANEL INFO	==================*/
+.panel{
+	background-color: #ebebeb;	
+}
+
+.panel li a, .panel li{
+	color: #788d28;
+	font-size: 9px;
+}
+
+.panel li:first-child{
+	background-color: #3c4157;
+	color: #fafafa;
+	font-family: 'Corben', cursive;
+}
+
+.panel span.left{
+	float: left;
+}
+
+.panel span.right{
+	float: right;
+}
+
+
+/*================== CONTENT ==================*/
+
+.content{
+	background-color: white;
+	border-radius: 58x; 
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border: 2px solid black;
+	font-size: 11px;
+	padding: 10px;
+}
+
+.content th{
+	color: #788d28;
+	font-size: 13px;
+}
+
+.content h3{
+	color: #59617d;
+	font-family: 'Mate', serif;
+}
+
+
+/*================== FORM ==================*/
+#form label{
+	color: white;
+	float: left;
+	margin-right: 20px;
+	padding-top: 5px;
+	font-family: 'Corben', cursive;
+}
+
+#form  select {
+   -webkit-appearance: none;
+    -moz-appearance: button;
+    appearance: none;
+   width: 268px;
+   padding: 5px;
+   font-size: 16px;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   height: 34px;
+   background: #fff url("/bundles/forthicimeadmin/images/1372282816_arrow_sans_down.png") no-repeat right center;
+   background-color: #59617d;
+   color: white;
+   padding-left: 10px;
+   text-indent:20px;
+   }
+
+/*================== LOGIN ==================*/   
+#loginForm label{
+	color: white;
+}
+
+

@@ -1,0 +1,39 @@
+
+{% extends '::base.html.twig' %}
+
+{% block topbar %}
+	
+{% endblock %}
+
+{% block body %}
+
+  {% if error %}
+	<div class="notification error png_bg">
+		<div>
+			{{ error.message }}
+		</div>
+	</div>
+  {% endif %}
+
+<form action="{{ path('admin_login_check') }}" method="post" class="span4 offset4">
+  
+  <p>
+      <label>Username</label>
+	<input class="text-input" type="text" name="_username" value="{{ identifiant }}" />
+   </p>
+   <p>
+      <label>Password</label>
+      <input class="text-input" type="password" name="_password" />
+   </p>
+   <p id="remember-password">
+      <input type="checkbox" name="_remenber_me" />Remember me
+   </p>
+ 
+   <p>
+	<input class="button" type="submit" name="login" value="Sign In" />
+   </p>
+</form>
+
+
+
+{% endblock %}

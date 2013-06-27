@@ -1,0 +1,103 @@
+
+{% extends '::base.html.twig' %}
+
+{% block topbar %}
+	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+	 	<div  class="hide-banner span1" style="float: right;"><i class="icon-circle-arrow-up icon-white"></i></div>
+	{% endif %}
+{% endblock %}
+
+
+{% block menu %}
+	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+         <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">LOGOUT</a></span>
+     
+     {% endif %}
+{% endblock %}
+
+
+
+{% block body %}
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script src="{{ asset('bundles/forthicimeadmin/js/CharBar.js') }}"></script>
+
+	<div class="span3">
+
+		<ul class="panel nav nav-list" style="font-size: 8pt;">
+			<li class="nav-header"><i class="icon-list icon-white"> </i> Statistiques</li>
+			<li>
+				<span class="left">Nombre de Medecins:</span> 
+				<span class="right">{{ statistic.nbMedecin }}</span>
+				<br style="clear: both">
+			</li>
+
+			<li>
+				<span class="left">Nombre de Clients:</span> 
+				<span class="right">{{ statistic.nbClient }}</span>
+				<br style="clear: both">
+			</li> 
+			<li>
+				<span class="left">Nombre de Dossiers:</span> 
+				<span class="right">{{ statistic.nbDossier }}</span>
+				<br style="clear: both">
+			</li>
+		</ul>
+
+		</br>
+
+		<!-- DERNIERE CONNECTION -->
+		<ul class="panel nav nav-list" style="font-size: 8pt;">
+		 	<li class="nav-header"><i class="icon-resize-small icon-white"> </i> Dernieres connections</li>
+		{% for medecin in last_connections %}
+			<li> 
+				<span class="left">{{ medecin.nom|lower|capitalize }}</span>
+				<span class="right">{{ medecin.login|date('Y-m-d H:i') }}</span>
+				<br style="clear: both"/>
+			</li>						 
+		{% endfor %}
+		</ul>	
+
+		<br />
+
+		<!-- MEDECIN JAMAIS CONNECTE -->
+
+		<ul class="panel nav nav-list" style="font-size: 8pt;">
+		 	<li class="nav-header"><i class="icon-resize-full icon-white"> </i> Medecin qui ne se sont jamais connecté</li>
+		{% for medecin in never_connected %}
+			<li> 
+				{{ medecin.nom|lower|capitalize }}
+			</li>						 
+		{% endfor %}
+			{% if total_never_connected > max_never_connected %}
+			<li>
+				{{ total_never_connected - max_never_connected}} supplémentaire(s) ...
+			</li>
+			{% endif %}
+		</ul>
+	</div>
+
+	<div class="span6">			
+
+		{{ form_widget(form) }}
+
+		<script type="text/javascript">
+
+  				var chart = new ChartBart("{{ path('forthicime_connection_count') }}");
+				chart.drawChart($("select#form_Annee option:selected").text());
+
+  				$('#form_Annee').change(function(){
+					chart.drawChart($("select#form_Annee option:selected").text());  					
+  				});
+
+	
+	    </script>
+
+	    <div id="chart_div" style="width: 900px; height: 500px;	"></div>
+
+    </div>
+
+    <div class="span3">
+    	
+    </div>
+{% endblock %}

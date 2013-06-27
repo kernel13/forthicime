@@ -1,0 +1,8 @@
+<ul class="panel nav nav-list" style="font-size: 8pt;">
+ 	<li class="nav-header"><i class="icon-user icon-white"> </i> Dernier patients ajoutés</li>
+{% for client in latest_client %}
+	<li> 
+		<a href="{{ path('forthicime_dossier_homepage', {'client': client.id }) }}">{{ client.nom|lower|capitalize  }} {{ client.prenom|lower|capitalize  }}</a>
+	</li>						 
+{% endfor %}
+</ul>

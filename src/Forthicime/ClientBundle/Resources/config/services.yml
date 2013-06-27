@@ -1,0 +1,7 @@
+parameters:
+#    forthicime_client.example.class: Forthicime\ClientBundle\Example
+
+services:
+#    forthicime_client.example:
+#        class: %forthicime_client.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

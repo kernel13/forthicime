@@ -1,0 +1,7 @@
+forthicime_admin_homepage:
+    pattern:  /
+    defaults: { _controller: ForthicimeAdminBundle:Default:index }
+forthicime_connection_count:
+    pattern: /GetConnectionCount
+    defaults: { _controller: ForthicimeAdminBundle:Default:GetConnectionCount}
+

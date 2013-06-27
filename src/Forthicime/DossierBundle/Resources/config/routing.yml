@@ -1,0 +1,7 @@
+forthicime_dossier:
+    pattern: /dossiers/{id}
+    defaults: { _controller: ForthicimeDossierBundle:Default:show }
+
+forthicime_dossier_homepage:
+    pattern:  /dossiers/{client}/client/{page}
+    defaults: { _controller: ForthicimeDossierBundle:Default:index, page: 1 }

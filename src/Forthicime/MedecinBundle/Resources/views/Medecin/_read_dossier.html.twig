@@ -1,0 +1,12 @@
+<ul class="panel nav nav-list" style="font-size: 8pt;">
+ 	<li class="nav-header"><i class="icon-book icon-white"> </i> Derniers Dossiers ouvert</li>
+{% for dossier in latest_read %}
+	<li>
+		<a href="{{ path('forthicime_dossier', {'id': dossier.id }) }}"> 
+			<span class="left">{{ dossier.libelle }}</span>
+			<span class="right">{{ dossier.nom|lower|capitalize  }} {{ dossier.prenom|lower|capitalize }}</span>
+		</a>
+		<div style="clear: both"/>
+	</li>						 
+{% endfor %}
+</ul>

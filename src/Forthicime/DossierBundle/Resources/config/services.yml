@@ -1,0 +1,7 @@
+parameters:
+#    forthicime_dossier.example.class: Forthicime\DossierBundle\Example
+
+services:
+#    forthicime_dossier.example:
+#        class: %forthicime_dossier.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

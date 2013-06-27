@@ -1,0 +1,8 @@
+forthicime_medecin_homepage:
+    pattern: /medecin/{page}
+    defaults: { _controller: ForthicimeMedecinBundle:Medecin:index, page: 1 }
+    requirements:
+        page: \d+
+forthicime_medecin_login:
+    pattern: /medecin/create
+    defaults: { _controller: ForthicimeMedecinBundle:Medecin:create }

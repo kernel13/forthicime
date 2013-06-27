@@ -1,0 +1,228 @@
+<?php
+
+namespace Forthicime\DossierBundle\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Dossier
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class Dossier
+{
+
+    /**
+    * @ORM\ManyToOne(targetEntity="ForthicimeMedecinBundle:Medecin", inversedBy="dossiers")
+    * @ORM\JoinColumn(name="category_id", referencedColumnName="id")    
+    */
+    private $medecin;
+
+    /**
+    * @ORM\ManyToOne(targetEntity="ForthicimeClientBundle:Client", inversedBy="dossiers")
+    * @ORM\JoinColumn(name="category_id", referencedColumnName="id")    
+    */
+    private $client;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numeric", type="integer")
+     */
+    private $numeric;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="idMedecin", type="integer")
+     */
+    private $idMedecin;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="idClient", type="integer")
+     */
+    private $idClient;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="libelle", type="string", length=255)
+     */
+    private $libelle;
+
+    /**
+     * @var timestamp
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="timestamp")
+     */
+    private $created;
+
+    /**
+     * @var timestamp
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated", type="timestamp")
+     */
+    private $updated;
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set numeric
+     *
+     * @param integer $numeric
+     * @return Dossier
+     */
+    public function setNumeric($numeric)
+    {
+        $this->numeric = $numeric;
+    
+        return $this;
+    }
+
+    /**
+     * Get numeric
+     *
+     * @return integer 
+     */
+    public function getNumeric()
+    {
+        return $this->numeric;
+    }
+
+    /**
+     * Set idMedecin
+     *
+     * @param integer $idMedecin
+     * @return Dossier
+     */
+    public function setIdMedecin($idMedecin)
+    {
+        $this->idMedecin = $idMedecin;
+    
+        return $this;
+    }
+
+    /**
+     * Get idMedecin
+     *
+     * @return integer 
+     */
+    public function getIdMedecin()
+    {
+        return $this->idMedecin;
+    }
+
+    /**
+     * Set idClient
+     *
+     * @param integer $idClient
+     * @return Dossier
+     */
+    public function setIdClient($idClient)
+    {
+        $this->idClient = $idClient;
+    
+        return $this;
+    }
+
+    /**
+     * Get idClient
+     *
+     * @return integer 
+     */
+    public function getIdClient()
+    {
+        return $this->idClient;
+    }
+
+    /**
+     * Set libelle
+     *
+     * @param string $libelle
+     * @return Dossier
+     */
+    public function setLibelle($libelle)
+    {
+        $this->libelle = $libelle;
+    
+        return $this;
+    }
+
+    /**
+     * Get libelle
+     *
+     * @return string 
+     */
+    public function getLibelle()
+    {
+        return $this->libelle;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \timestamp $created
+     * @return Dossier
+     */
+    public function setCreated(\timestamp $created)
+    {
+        $this->created = $created;
+    
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \timestamp 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \timestamp $updated
+     * @return Dossier
+     */
+    public function setUpdated(\timestamp $updated)
+    {
+        $this->updated = $updated;
+    
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \timestamp 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+}

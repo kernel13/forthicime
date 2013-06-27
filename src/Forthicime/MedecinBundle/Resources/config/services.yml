@@ -1,0 +1,10 @@
+parameters:
+#    forthicime_medecin.example.class: Forthicime\MedecinBundle\Example
+#    arguments: [@service_id, "plain_value", %parameter%]
+
+services:
+    login_listener:
+        class: 'Forthicime\MedecinBundle\Listener\LoginListener'
+        arguments: ['@security.context', '@doctrine']
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.interactive_login' }

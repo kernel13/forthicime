@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('bundles/forthicimemedecin/css/base.css') }}">
+
+        <!-- GOOGLE FONTS -->
+        <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One' rel='stylesheet' type='text/css'>        
+        <link href='http://fonts.googleapis.com/css?family=Mate' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Corben' rel='stylesheet' type='text/css'>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script src="{{ asset('bundles/forthicimemedecin/js/jquery.cookie.js') }}"></script>
+        <script src="{{ asset('bundles/forthicimemedecin/js/medecin.js') }}"></script>
+
+        <script>
+            $(function() {
+
+                    if(BannerSingleton.getInstance().hidden())
+                        $('#siteHeader').css({top: '-230'});
+                    else
+                        $('#siteHeader').css({top: '0'});
+
+                    $(".hide-banner").click(function(){
+                        if($('#siteHeader').position().top >= 0){
+                            $('#siteHeader').animate({top: '-230'});
+                            $(this).html("<i class='icon-circle-arrow-down icon-white'>");
+                            BannerSingleton.getInstance().hidden(true);
+                        }
+                        else{
+                            $('#siteHeader').animate({top: '0'});
+                            $(this).html("<i class='icon-circle-arrow-up icon-white'>");
+                            BannerSingleton.getInstance().hidden(false);
+                        }
+                    });
+
+
+                });          
+        </script>
+    </head>
+    <body>
+        
+        <!--    SITE HEADER -->
+        <div id="siteHeader" class="navbar navbar-fixed-top">
+
+             <!-- MENU -->
+            <div class="row-fluid">
+                <div id="laboTitle">Laboratoire de biologie medicale</div>
+                <hr />
+                <div id="doctorTitle">Docteur Henri Marachlian <br /> <br />Tel : 04 91 66 13 43 </div>
+
+            <!-- BANNER -->
+                <img src="{{ asset('bundles/forthicimemedecin/images/header2.png') }}" alt="Laboratoire de biologie medicale" />
+            </div>
+
+            <!-- BANNER FOOTER -->
+            <div id="banner-footer" class="row-fluid">
+                <div id="menu" class="span6">
+                 {% block menu %}{% endblock %}
+                </div>
+
+                <div class="span5">
+                <!-- top fixed bar -->
+                {% block topbar %}{% endblock %}
+                </div>
+
+            </div>
+             
+
+                
+        </div>
+
+        <div id="container" class="container-fluid">
+        
+                <!-- CONTENT -->
+                <div class="row-fluid">
+                    <!-- Content  -->
+                    <div id="document">
+                      {% block body %}{% endblock %}
+                    </div>
+                </div>
+                  
+        </div>
+
+        {% block javascripts %}{% endblock %}
+
+         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    </body>
+</html>

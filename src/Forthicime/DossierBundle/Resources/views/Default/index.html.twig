@@ -1,0 +1,96 @@
+
+
+{% extends '::base.html.twig' %}
+
+{% block topbar %}
+
+	<div id="menuInfoBar">
+		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+			
+			Docteur {{ app.user.nom }}
+		
+		{% endif %}
+	</div>
+	
+	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+	 	<div  class="hide-banner span1" style="float: right;"><i class="icon-circle-arrow-up icon-white"></i></div>
+	{% endif %}
+
+{% endblock %}
+
+{% block menu %}
+	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+
+        <span><i class="icon-home icon-white"> </i> <a href="{{ path('_welcome') }}">HOME</a></span>
+                 
+        <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">LOGOUT</a></span>
+     
+     {% endif %}
+{% endblock %}
+
+{% block body %}
+
+	<div class="span3">
+		<!-- DERNIER DOSSIER LU -->
+		{% include 'ForthicimeMedecinBundle:Medecin:_read_dossier.html.twig' %}
+		<br />
+
+		<!-- DERNIER DOSSIER AJOUTÉ -->
+		{% include 'ForthicimeMedecinBundle:Medecin:_recent_dossier.html.twig' %}
+		<br />
+		
+
+	</div>
+
+
+	<div class="span7">
+			<div class="content">
+				<h3><img src="{{ asset('bundles/forthicimedossier/images/utilisateur-icone-8147-32.png') }}"/> {{ client|upper }}</h3>
+				<br />
+
+					<table class="table table-striped">
+
+					<tr>				
+						<th>Numeric</th>
+						<th>Libéllé</th>
+						<th>Créé le</th>
+						<th></th>
+					</tr>
+
+				{% for dossier in dossiers %}
+						 <tr>
+			 			 	<td> {{ dossier.numeric }}</td>
+			 			 	<td> {{ dossier.libelle	 }}</td>
+			 			 	<td> {{ dossier.created|date('Y-m-d H:i')  }}</td>					 		
+			 			 	<td>
+			 					<a href="{{ path('forthicime_dossier', { 'id': dossier.id }) }}">
+						 		 <img style="width: 35px;" src="{{ asset('bundles/forthicimemedecin/images/dossier.png') }}" alt="Dossiers" />
+						 		 </a>
+			 			 	</td>
+						 </tr>
+				{% endfor %}
+
+					</table>
+
+						<div class="paginator">
+
+							{% include 'pagination.html.twig' with {
+				   				 currentFilters: { myFilter: dossiers },
+				    			 currentPage: current_page,
+				    			 paginationPath: "/dossiers/" ~ client_id ~ "/client/",
+				    			 lastPage: last_page,
+				    			 showAlwaysFirstAndLast: true
+							} only %}
+
+						</div>
+			</div>	
+	</div>
+
+	<div class="span2">
+		<!-- DERNIER CLIENT AJOUTÉ -->
+		{% include 'ForthicimeMedecinBundle:Medecin:_recent_client.html.twig' %}
+		<br />
+
+	</div>
+{% endblock %}
+
