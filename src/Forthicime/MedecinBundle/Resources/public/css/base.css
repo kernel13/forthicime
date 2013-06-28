@@ -6,7 +6,7 @@ body{
 
 /*==================	SITE HEADER		==================*/
 #siteHeader{
-	height: 270px;	
+	height: 240px;	
 	background-color: rgba(64, 69, 97, 0.9);
 	font-size: 10px;
 }
@@ -17,7 +17,7 @@ body{
 
 #siteHeader hr{
 position: absolute; 
-	top: 85px;
+	top: 70px;
 	width: 100%;
 	height: 20px;
 	background-color: #cbd9ee;

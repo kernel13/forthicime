@@ -1,6 +1,7 @@
 
 #!/usr/bin/env ruby
 
+# Demarage de la synchronizaiton le ..\..\.. a ..:..
 csv = File.dirname(__FILE__) + '/Analyses/FichierCSV'
 orders = File.dirname(__FILE__) + '/Analyses/FichierCSV/Orders'
 command = File.dirname(__FILE__) + "/app/console"
@@ -76,3 +77,5 @@ Dir.glob(orders + '/*Dossier*.csv') do |file|
 		`#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}"`
 	#end
 end
+
+# Fin de la synchronizaiton le ..\..\.. a ..:..

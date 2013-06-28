@@ -8,7 +8,18 @@ framework:
 web_profiler:
     toolbar: true
     intercept_redirects: false
-
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        host:     127.0.0.1
+        port:     ~
+        dbname:   symfony
+        user:     root
+        password: ~
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver, add the path in parameters.yml
+        # e.g. database_path: %kernel.root_dir%/data/data.db3
+        path:     "%kernel.root_dir%/sqlite.db"
 monolog:
     handlers:
         main:

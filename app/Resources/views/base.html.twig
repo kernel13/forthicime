@@ -8,34 +8,27 @@
         <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ asset('bundles/forthicimemedecin/css/base.css') }}">
 
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script src="{{ asset('bundles/forthicimemedecin/js/jquery.cookie.js') }}"></script>
+        <script src="{{ asset('bundles/forthicimemedecin/js/medecin.js') }}"></script>
+
         <!-- GOOGLE FONTS -->
         <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One' rel='stylesheet' type='text/css'>        
         <link href='http://fonts.googleapis.com/css?family=Mate' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Corben' rel='stylesheet' type='text/css'>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script src="{{ asset('bundles/forthicimemedecin/js/jquery.cookie.js') }}"></script>
-        <script src="{{ asset('bundles/forthicimemedecin/js/medecin.js') }}"></script>
-
         <script>
             $(function() {
 
-                    if(BannerSingleton.getInstance().hidden())
-                        $('#siteHeader').css({top: '-230'});
-                    else
-                        $('#siteHeader').css({top: '0'});
+                    // When the page is reloaded it check if it was hidden previously 
+                    // then it hide the banner
+                    if(BannerSingleton.getInstance().isHidden())
+                    {
+                        BannerSingleton.getInstance().setHidden();
+                    }
 
                     $(".hide-banner").click(function(){
-                        if($('#siteHeader').position().top >= 0){
-                            $('#siteHeader').animate({top: '-230'});
-                            $(this).html("<i class='icon-circle-arrow-down icon-white'>");
-                            BannerSingleton.getInstance().hidden(true);
-                        }
-                        else{
-                            $('#siteHeader').animate({top: '0'});
-                            $(this).html("<i class='icon-circle-arrow-up icon-white'>");
-                            BannerSingleton.getInstance().hidden(false);
-                        }
+                       BannerSingleton.getInstance().toggle(this);
                     });
 
 
@@ -88,6 +81,5 @@
 
         {% block javascripts %}{% endblock %}
 
-         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     </body>
 </html>

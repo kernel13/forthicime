@@ -1,8 +1,9 @@
 /web/bundles/
+/web/app_dev.php
 /app/bootstrap*
 /app/cache/*
 /app/logs/*
 /vendor/
 /app/config/parameters.yml
 /app/sqlite.db
-/Analyses/*
+/Analyses/
