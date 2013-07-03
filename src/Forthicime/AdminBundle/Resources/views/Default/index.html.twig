@@ -10,7 +10,8 @@
 
 {% block menu %}
 	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-
+		 <span><i class="icon-home icon-white"> </i> <a href="{{ path('forthicime_admin_homepage') }}">HOME</a></span>
+		 <span><i class="icon-refresh icon-white"> </i> <a href="{{ path('forthicime_synchronization') }}">SYNCHRONIZATION</a></span>		 
          <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">LOGOUT</a></span>
      
      {% endif %}

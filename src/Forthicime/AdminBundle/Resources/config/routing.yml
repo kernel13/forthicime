@@ -4,4 +4,9 @@ forthicime_admin_homepage:
 forthicime_connection_count:
     pattern: /GetConnectionCount
     defaults: { _controller: ForthicimeAdminBundle:Default:GetConnectionCount}
-
+forthicime_synchronization:
+    pattern: /synchronization
+    defaults: { _controller: ForthicimeAdminBundle:Synchronization:index }
+Forthicime_Synchronization_detail:
+    pattern: /synchronizationDetail/{category}/{synchronizationId}
+    defaults: { _controller: ForthicimeAdminBundle:Synchronization:synchronizationDetail, category: "medecin" }

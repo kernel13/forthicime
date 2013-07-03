@@ -1,0 +1,174 @@
+
+{% extends '::base.html.twig' %}
+
+{% block topbar %}
+	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+	 	<div  class="hide-banner span1" style="float: right;"><i class="icon-circle-arrow-up icon-white"></i></div>
+	{% endif %}
+{% endblock %}
+
+
+{% block menu %}
+	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+		 <span><i class="icon-home icon-white"> </i> <a href="{{ path('forthicime_admin_homepage') }}">HOME</a></span>
+		 <span><i class="icon-refresh icon-white"> </i> <a href="{{ path('forthicime_synchronization') }}">SYNCHRONIZATION</a></span>		 
+         <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">LOGOUT</a></span>
+     
+     {% endif %}
+{% endblock %}
+
+
+
+{% block body %}
+	
+	<div class="span3">
+
+	
+	</div>
+
+	<div class="span6">			
+
+		<div class="content">
+				<h3>Liste des synchronizations</h3>
+				
+				<div class="synchronization">
+					<table class="table table-striped">
+
+					<tr>
+						<th>id</th>				
+						<th>Debut</th>
+						<th>Fin</th>
+						<th>Nb synchronization</th>
+						<th>nb succés</th>
+						<th>nb echec</th>
+					</tr>
+
+				{% for sync in synchronizations %}
+						 <tr>
+						 	<td> {{ sync.id }}</td>
+						 	<td> {{ sync.start|date('Y-m-d H:i')  }} </td> 
+						 	<td> {{ sync.end|date('Y-m-d H:i')  }} </td> 
+						 	<td> {{ sync.nbTransaction  }} </td> 
+						 	<td> {{ sync.nbSuccess  }} </td> 
+						 	<td> {{ sync.nbFailure  }} </td> 
+						 </tr>
+				{% endfor %}
+
+					</table>
+				</div>		
+		</div>
+    </div>
+
+    <div class="span3">
+
+    	<div id="synchronizationDetail" class="content">
+
+    		<div class="row offset1">
+    			<div class="span5">
+    				<h3>Detail de la synchronization</h3>
+    			</div>
+
+    			<div id="sync_filter_layer" class="span7">
+    				<form id="sync_filter_form" class="form-inline">
+						<h4>Filtre: </h4>
+
+						<label for="Ajout">
+							<input type="checkbox" name="diplay" value="Ajout" checked="true" /> Ajout	
+						</label>										
+					
+						<label for="Modification">
+							<input type="checkbox" name="diplay" value="Modification" checked="true" /> Modification
+						</label>
+									
+					
+						<label for="Suppression">
+							<input type="checkbox" name="diplay" value="Suppression" checked="true" /> Suppression
+						</label>
+						
+					
+						<label for="succes">
+							<input type="checkbox" name="diplay" value="succes" checked="true" /> Succés	
+						</label>
+
+						<label for="erreur">
+							<input type="checkbox" name="diplay" value="erreur" checked="true" /> Erreur	
+						</label>
+						
+					</form>
+				</div>
+			</div>
+
+			<div id="tabs">
+			  <ul>
+			    <li><a href="/admin/synchronizationDetail/medecin">Medecin</a></li>
+			    <li><a href="/admin/synchronizationDetail/client">Client</a></li>
+			    <li><a href="/admin/synchronizationDetail/dossier">Dossier</a></li>
+			  </ul>
+			  <div id="tabs-default" class="ui-tabs-panel"></div>
+			</div>
+
+		
+    	</div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('bundles/forthicimeadmin/js/SynchronizationDetail.js') }}"></script>
+	<script type="text/javascript">
+		$(function(){
+			var synch;
+
+			$(".synchronization table tr").mouseover(function(){
+				//$(this).css("background-color", "rgba(46, 50, 75, 0.6)");
+				//$(this).css("cursor", "pointer");
+				//$(this).css("color", "white");
+				$(this).addClass("mousehover");
+			});
+
+			$(".synchronization table tr").mouseout(function(){
+				//$(this).css("background-color", "white");
+				//$(this).css("color", "black");
+				$(this).removeClass("mousehover");
+			});
+
+			 $(".synchronization table tr").click(function(){
+			 	$(".synchronization tr.selected").removeClass("selected");	
+			 	$(this).addClass("selected");
+			 	synch = new SynchronizationDetail(
+			 		$(this).children("td").first().text().trim()
+			 	);
+
+			 	synch.Run();			
+
+    		});
+
+			$('#tabs').tabs();			
+
+			$("#synchronizationDetail").hide();
+			$( "#tabs" ).on( "tabsbeforeload", function( event, ui ) {
+			  	var url = ui.ajaxSettings.url + "/" + synch.GetSynchId();
+
+            	$.getJSON(url, function (data) {
+               	 	//var data = $.parseJSON(ui.panel.text());
+    			 	var html = synch.BuildHtml(data);
+    			 	ui.panel.html(html);
+    			 	synch.filter();
+            	});
+
+            	return false;
+			});
+
+			 $('#sync_filter_form').on('change', 'input[type=checkbox]', function(e) {
+				synch.filter();
+			});
+
+	});
+
+	
+
+
+	</script>
+{% endblock %}
+
+
+

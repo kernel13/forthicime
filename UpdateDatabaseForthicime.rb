@@ -1,11 +1,20 @@
 
 #!/usr/bin/env ruby
 
-# Demarage de la synchronizaiton le ..\..\.. a ..:..
 csv = File.dirname(__FILE__) + '/Analyses/FichierCSV'
 orders = File.dirname(__FILE__) + '/Analyses/FichierCSV/Orders'
 command = File.dirname(__FILE__) + "/app/console"
 i = 0
+
+# Synchronizatin is starting
+output = `#{command} StartSynchronization`
+synchronizaitonID = output.split("SynchronizationID:").last.chomp
+puts "synchId #{synchronizaitonID}"
+# Check if an id was returned
+if synchronizaitonID.empty?
+	puts "Erreur: synchronizaitonID est vide"
+	exit
+end
 
 #create one file by order
 Dir.glob(File.dirname(__FILE__) + '/Analyses/FichierCSV/*.csv') do |file|
@@ -17,6 +26,10 @@ Dir.glob(File.dirname(__FILE__) + '/Analyses/FichierCSV/*.csv') do |file|
 
 	File.delete(file)
 end
+
+#Update the number of transaction that will be done
+puts "#{command} UpdateTotalTransaction #{ Dir.glob(orders + '/*.csv').count } #{synchronizaitonID}"
+`#{command} UpdateTotalTransaction #{ Dir.glob(orders + '/*.csv').count } #{synchronizaitonID}`
 
 # 
 # => Manage Clients
@@ -32,9 +45,8 @@ Dir.glob(orders + '/*Client*.csv') do |file|
 
 		a = File.basename(file, '.csv')
 		puts "Upate Client: " + a.split('_').first
-		puts "#{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom}'"
-		`#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom}"`
-
+		puts "#{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
+		`#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom.chomp}" #{synchronizaitonID}`
 end
 
 #
@@ -51,9 +63,9 @@ Dir.glob(orders + '/*Medecin*.csv') do |file|
 
 		a = File.basename(file, '.csv')
 		puts "Update Medecin: " + a.split('_').first
-		puts "#{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}'"
+		puts "#{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
 
-		`#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}"` 
+		`#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}" #{synchronizaitonID}` 
 end
 
 #
@@ -72,10 +84,14 @@ Dir.glob(orders + '/*Dossier*.csv') do |file|
 
 		a = File.basename(file, '.csv')
 		puts "Update Dossiers: " + a.split('_').first
-		puts "#{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}'"
+		puts "#{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
 
-		`#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}"`
+		`#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}" #{synchronizaitonID}`
 	#end
 end
 
+`#{command} EndSynchronization #{synchronizaitonID}`
+
 # Fin de la synchronizaiton le ..\..\.. a ..:..
+
+

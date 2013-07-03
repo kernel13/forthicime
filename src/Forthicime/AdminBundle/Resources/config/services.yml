@@ -2,6 +2,15 @@ parameters:
 #    forthicime_admin.example.class: Forthicime\AdminBundle\Example
 
 services:
+    serializer.method:
+        class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
+    serializer.encoder.json:
+        class: Symfony\Component\Serializer\Encoder\JsonEncoder
+    serializer:
+        class: Symfony\Component\Serializer\Serializer
+        arguments:
+            - [@serializer.method]
+            - {json: @serializer.encoder.json }
 #    forthicime_admin.example:
 #        class: %forthicime_admin.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]

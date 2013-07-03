@@ -194,5 +194,5 @@ class DefaultController extends Controller
 	          'identifiant' => $this->get('request')->getSession()->get(SecurityContext::LAST_USERNAME),
 	          'error' => $error,
 	      ));
-    }    
+    }   
 }
