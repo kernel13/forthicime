@@ -6,7 +6,7 @@ set :application, 		"Forthicime"
 #set :domain,      		"#{application}.com"
 set :deploy_to,   		"/kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/forthicime"
 
-
+set :php_bin, "php6"
 # =============================================================================
 # SCM OPTIONS
 # =====================================================================
