@@ -5,8 +5,8 @@
 set :application, 		"Forthicime"
 #set :domain,      		"#{application}.com"
 set :deploy_to,   		"/kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/forthicime"
-
 set :php_bin, "php6"
+
 # =============================================================================
 # SCM OPTIONS
 # =====================================================================
@@ -46,6 +46,15 @@ set :model_manager, 	"doctrine"
 # =============================================================================
 # Be more verbose by uncommenting the following line
 logger.level = Logger::MAX_LEVEL
+
+# =============================================================================
+# SYMFONY
+# =============================================================================
+set :shared_files, ["app/config/parameters.yml"]
+set :shared_children, [app_path + "/logs", "vendor"]
+set :use_composer, true
+set :update_vendors, true
+set :dump_assetic_assets, true
 
 # =============================================================================
 # Deployment Using SCP
