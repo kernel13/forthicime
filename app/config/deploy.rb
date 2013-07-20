@@ -50,10 +50,10 @@ logger.level = Logger::MAX_LEVEL
 # =============================================================================
 # SYMFONY
 # =============================================================================
-set :shared_files, ["app/config/parameters.yml"]
-set :shared_children, [app_path + "/logs", "vendor"]
+#set :shared_files, ["app/config/parameters.yml"]
+#set :shared_children, [app_path + "/logs", "vendor"]
 #set :use_composer, true
-set :update_vendors, true
+#set :update_vendors, true
 set :dump_assetic_assets, true
 #set :composer_options, "--no-dev --prefer-dist --optimize-autoloader --no-progress""
 set :composer_options, "--no-scripts --prefer-source --no-dev --dry-run"
