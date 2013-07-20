@@ -21,7 +21,7 @@ forthicime_medecin:
 
 login:
     pattern:  /login
-    defaults: { _controller: ForthicimeMedecinBundle:medecin:login }
+    defaults: { _controller: ForthicimeMedecinBundle:Medecin:login }
 
 login_check:
     pattern: /login_check

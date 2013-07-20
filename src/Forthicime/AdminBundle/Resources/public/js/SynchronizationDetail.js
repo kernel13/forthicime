@@ -29,7 +29,7 @@ function SynchronizationDetail(synchId)
 			$("#document>div:first-child").animate({width: '0'}, function(){
 				__self.DisplaySynchronizationDetail();
 	
-				$.getJSON("/admin/synchronizationDetail/medecin/" + __self.__synchId, function(data, textStatus, jqXHR){					
+				$.getJSON("/forthicime/admin/synchronizationDetail/medecin/" + __self.__synchId, function(data, textStatus, jqXHR){					
 					$( "#tabs" ).tabs({ active: 0 });
 					$("#ui-tabs-1").html(__self.BuildHtml(data));	
 					__self.filter();
@@ -37,7 +37,7 @@ function SynchronizationDetail(synchId)
 			});
 		} else {
 			__self.DisplaySynchronizationDetail();			
-			$.getJSON("/admin/synchronizationDetail/medecin/" + __self.__synchId, function(data, textStatus, jqXHR){					
+			$.getJSON("/forthicime/admin/synchronizationDetail/medecin/" + __self.__synchId, function(data, textStatus, jqXHR){					
 				  	$( "#tabs" ).tabs({ active: 0 });
 					$("#ui-tabs-1").html(__self.BuildHtml(data));	
 					__self.filter();

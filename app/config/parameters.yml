@@ -1,11 +1,11 @@
 parameters:
-    database_driver:   pdo_mysql
-    database_host:     localhost
-    database_port:     3306
-    database_name:     db464836053
-    database_user:     dbo464836053
-    database_password: Ciotat13
-    database_path:     db464836053.db.1and1.com
+    database_driver:   pdo_sqlite
+    database_host:     127.0.0.1
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+    database_path: "%kernel.root_dir%/sqlite.db"
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1

@@ -92,9 +92,12 @@ class DefaultController extends Controller
         $em->flush();
         
         $filename = $dossier->getLibelle();
-        	
-		$file = "/Users/stephane/Sites/Forthicime/Analyses/".$filename.".pdf";
-		$response = new Response();
+        
+        
+        $file = "/kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/Admin/Analyses/".$filename.".pdf";
+		#$file = "/Users/stephane/Sites/Forthicime/Analyses/".$filename.".pdf";
+		
+        $response = new Response();
 		//$response->clearHttpHeaders();
 		$response->setStatusCode(200);
 		$response->headers->set('content-type', 'application/pdf');

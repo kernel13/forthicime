@@ -3,4 +3,8 @@
 /app/cache/*
 /app/logs/*
 /app/sqlite.db
+/app/config/config_dev.yml
+/app/config/routing_dev.yml
+/app/config/parameters_dev.yml
 /Analyses/
+/vendor/

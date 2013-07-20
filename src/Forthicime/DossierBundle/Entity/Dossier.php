@@ -44,9 +44,9 @@ class Dossier
     /**
      * @var integer
      *
-     * @ORM\Column(name="numeric", type="integer")
+     * @ORM\Column(name="numfield", type="integer")
      */
-    private $numeric;
+    private $numfield;
 
 
     /**
@@ -101,7 +101,7 @@ class Dossier
      */
     public function setNumeric($numeric)
     {
-        $this->numeric = $numeric;
+        $this->numfield = $numeric;
     
         return $this;
     }
@@ -113,7 +113,7 @@ class Dossier
      */
     public function getNumeric()
     {
-        return $this->numeric;
+        return $this->numfield;
     }
 
     /**
