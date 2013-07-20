@@ -1,40 +1,40 @@
 _welcome:
-    pattern:  /forthicime/
+    pattern:  /
     defaults: { _controller: ForthicimeMedecinBundle:Medecin:index, page: 1 }
 
 forthicime_admin:
     resource: "@ForthicimeAdminBundle/Resources/config/routing.yml"
-    prefix:   /forthicime/admin
+    prefix:   /admin
 
 forthicime_client:
     resource: "@ForthicimeClientBundle/Resources/config/routing.yml"
-    prefix:   /forthicime
+    prefix:   /
 
 
 forthicime_dossier:
     resource: "@ForthicimeDossierBundle/Resources/config/routing.yml"
-    prefix:   /forthicime
+    prefix:   /
 
 forthicime_medecin:
     resource: "@ForthicimeMedecinBundle/Resources/config/routing.yml"
-    prefix:   /forthicime
+    prefix:   /
 
 login:
-    pattern:  /forthicime/login
+    pattern:  /login
     defaults: { _controller: ForthicimeMedecinBundle:Medecin:login }
 
 login_check:
-    pattern: /forthicime/login_check
+    pattern: /login_check
 
 logout:
-    pattern: /forthicime/logout
+    pattern: /logout
 
 admin_login:
-     pattern:  /forthicime/admin/login
+     pattern:  /admin/login
      defaults: { _controller: ForthicimeAdminBundle:Default:login }
 
 admin_login_check:
-     pattern: /forthicime/admin/login_check
+     pattern: /admin/login_check
 
 admin_logout:
-     pattern: /forthicime/admin/logout
+     pattern: /admin/logout

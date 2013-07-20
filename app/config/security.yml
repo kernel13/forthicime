@@ -18,7 +18,7 @@ security:
         in_memory:
             memory:
                 users:
-                    admin: { password: admin, roles: 'ROLE_SUPER_ADMIN' }
+                    admin: { password: uXjh123@fi, roles: 'ROLE_SUPER_ADMIN' }
         main:
             entity: { class: Forthicime\MedecinBundle\Entity\Medecin, property: identifiant}
 
@@ -26,21 +26,25 @@ security:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        admin:
+  admin:
             provider: in_memory
-            pattern: ^/admin
-            form_login: 
-                login_path: /admin/login
-                check_path: /admin/login_check
-            logout: 
-                path:   /admin/logout
-                target: /admin
-            anonymous: ~        
+            pattern: ^/forthicime/admin
+            form_login:
+                login_path: /forthicime/admin/login
+                check_path: /forthicime/admin/login_check
+            logout:
+                path:   /forthicime/admin/logout
+                target: /forthicime/admin
+            anonymous: ~
         secured_area:
             provider: main
-            pattern:    ^/
-            form_login: ~           
-            logout: ~            
+            pattern:    ^/forthicime
+            form_login:
+                login_path: /forthicime/login
+                check_path: /forthicime/login_check
+            logout:
+               path: /forthicime/logout
+               target: /forthicime
             #logout:
             #    path:   _demo_logout
             #    target: _demo
@@ -53,9 +57,8 @@ security:
                path:     /
                domain:   ~ # Defaults to the current domain from $_SERVER
     access_control:
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/admin, roles: ROLE_SUPER_ADMIN}
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_ADMIN }
+        - { path: ^/forthicime/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/forthicime/admin, roles: ROLE_SUPER_ADMIN}
+        - { path: ^/forthicime/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/forthicime, roles: ROLE_ADMIN }
 
