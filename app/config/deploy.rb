@@ -5,7 +5,7 @@
 set :application, 		"Forthicime"
 #set :domain,      		"#{application}.com"
 set :deploy_to,   		"/kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/forthicime"
-set :php_bin, "php6"
+#set :php_bin, "php6"
 
 # =============================================================================
 # SCM OPTIONS
@@ -34,7 +34,10 @@ role :app,        		"laboratoire-marachlian.fr", :primary => true       # This m
 # CAPISTRANO OPTIONS
 # =============================================================================
 set  :keep_releases,  	3
-set  :deploy_via, 		:copy
+#set  :deploy_via, 		:copy
+set   :deploy_via,       :capifony_copy_local
+set   :use_composer,     true
+set   :use_composer_tmp, true
 
 # =============================================================================
 # Doctrine
@@ -57,7 +60,7 @@ logger.level = Logger::MAX_LEVEL
 set :dump_assetic_assets, false
 #set :composer_options, "--no-dev --prefer-dist --optimize-autoloader --no-progress""
 #set :composer_options, "--no-scripts --prefer-source --no-dev --dry-run"
-set :copy_vendors, true
+#set :copy_vendors, true
 
 #Run migrations before warming the cache
 #before "symfony:cache:warmup", "symfony:doctrine:migrations:migrate"
