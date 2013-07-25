@@ -1,7 +1,7 @@
 
 #!/usr/bin/env ruby
 
-csv = File.dirname(__FILE__) + '/Analyses/FichierCSV'
+csv = File.dirname(__FILE__) + '/Analyses/FichierCSV/csv'
 orders = File.dirname(__FILE__) + '/Analyses/FichierCSV/Orders'
 command = File.dirname(__FILE__) + "/app/console"
 i = 0
@@ -17,7 +17,7 @@ if synchronizaitonID.empty?
 end
 
 #create one file by order
-Dir.glob(File.dirname(__FILE__) + '/Analyses/FichierCSV/*.csv') do |file|
+Dir.glob(File.dirname(__FILE__) + '/*.csv') do |file|
 	File.open(file).read.each_line do |line|
 		i += 1;
 		order = orders + "/#{File.basename(file, '.csv')}_#{i}.csv"

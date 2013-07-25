@@ -21,16 +21,16 @@
 {% block menu %}
 	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 
-        <span><i class="icon-home icon-white"> </i> <a href="{{ path('_welcome') }}">HOME</a></span>
+        <span><i class="icon-home icon-white"> </i> <a href="{{ path('_welcome') }}">Accueil</a></span>
                  
-        <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">LOGOUT</a></span>
+        <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">Se déconnecter</a></span>
      
      {% endif %}
 {% endblock %}
 
 {% block body %}
 
-	<div class="span3">
+	<div class="span4">
 		<!-- DERNIER DOSSIER LU -->
 		{% include 'ForthicimeMedecinBundle:Medecin:_read_dossier.html.twig' %}
 		<br />
@@ -38,8 +38,12 @@
 		<!-- DERNIER DOSSIER AJOUTÉ -->
 		{% include 'ForthicimeMedecinBundle:Medecin:_recent_dossier.html.twig' %}
 		<br />
-		
 
+		<!-- DERNIER CLIENT AJOUTÉ -->
+		{% include 'ForthicimeMedecinBundle:Medecin:_recent_client.html.twig' %}
+		<br />
+
+		
 	</div>
 
 
@@ -61,7 +65,7 @@
 						 <tr>
 			 			 	<td> {{ dossier.numeric }}</td>
 			 			 	<td> {{ dossier.libelle	 }}</td>
-			 			 	<td> {{ dossier.created|date('Y-m-d H:i')  }}</td>					 		
+			 			 	<td> {{ dossier.created|date('d-m-Y H:i')  }}</td>					 		
 			 			 	<td>
 			 					<a href="{{ path('forthicime_dossier', { 'id': dossier.id }) }}">
 						 		 <img style="width: 35px;" src="{{ asset('bundles/forthicimemedecin/images/dossier.png') }}" alt="Dossiers" />
@@ -86,11 +90,8 @@
 			</div>	
 	</div>
 
-	<div class="span2">
-		<!-- DERNIER CLIENT AJOUTÉ -->
-		{% include 'ForthicimeMedecinBundle:Medecin:_recent_client.html.twig' %}
-		<br />
-
+	<div class="span1">
+		
 	</div>
 {% endblock %}
 

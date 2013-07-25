@@ -1,8 +1,11 @@
 <ul class="panel nav nav-list" style="font-size: 8pt;">
- 	<li class="nav-header"><i class="icon-user icon-white"> </i> Dernier patients ajoutés</li>
+ 	<li class="nav-header"><i class="icon-user icon-white"> </i> Nouveaux patients</li>
 {% for client in latest_client %}
 	<li> 
-		<a href="{{ path('forthicime_dossier_homepage', {'client': client.id }) }}">{{ client.nom|lower|capitalize  }} {{ client.prenom|lower|capitalize  }}</a>
+		<a href="{{ path('forthicime_dossier_homepage', {'client': client.id }) }}">
+			<div>{{ client.nom|lower|capitalize  }} {{ client.prenom|lower|capitalize  }}</div>
+			<div>{{ client.created|date('d-m-Y H:i')  }} </div>
+		</a>
 	</li>						 
 {% endfor %}
 </ul>

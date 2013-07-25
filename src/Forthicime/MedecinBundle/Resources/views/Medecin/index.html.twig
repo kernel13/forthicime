@@ -18,9 +18,9 @@
 {% block menu %}
 	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 
-        <span><i class="icon-home icon-white"> </i> <a href="{{ path('_welcome') }}">HOME</a></span>
+        <span><i class="icon-home icon-white"> </i> <a href="{{ path('_welcome') }}">Accueil</a></span>
                  
-        <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">LOGOUT</a></span>
+        <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">Se déconnecter</a></span>
      
      {% endif %}
 {% endblock %}
@@ -28,7 +28,7 @@
 
 {% block body %}
 
-	<div class="span3">
+	<div class="span4">
 
 		<!-- DERNIER DOSSIER LU -->
 		{% include 'ForthicimeMedecinBundle:Medecin:_read_dossier.html.twig' %}
@@ -38,6 +38,9 @@
 		{% include 'ForthicimeMedecinBundle:Medecin:_recent_dossier.html.twig' %}
 		<br />
 		
+		<!-- DERNIER CLIENT AJOUTÉ -->
+		{% include 'ForthicimeMedecinBundle:Medecin:_recent_client.html.twig' %}
+		<br />
 
 	</div>
 
@@ -82,11 +85,8 @@
 		</div>
 	</div>
 
-	<div class="span2">
-
-		<!-- DERNIER CLIENT AJOUTÉ -->
-		{% include 'ForthicimeMedecinBundle:Medecin:_recent_client.html.twig' %}
-		<br />
+	<div class="span1">
+	
 
 	</div>
 {% endblock %}

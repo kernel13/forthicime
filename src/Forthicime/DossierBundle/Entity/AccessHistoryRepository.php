@@ -15,7 +15,7 @@ class AccessHistoryRepository extends EntityRepository
 	public function getLatestRead($medecin)
 	{
 		return $this->createQueryBuilder("a")
-             ->select("d.id, d.libelle, c.nom, c.prenom, a.access")   
+             ->select("d.id, d.libelle, c.nom, c.prenom, a.access, d.created")   
              ->innerJoin("a.dossier", "d")
              ->innerJoin("d.client", "c")    
              ->where("d.medecin = :medecin")             
@@ -45,4 +45,18 @@ class AccessHistoryRepository extends EntityRepository
 
             // return $dossiers;
 	}
+
+      public function getLatestReadFromAll()
+      {
+            return $this->createQueryBuilder("a")
+             ->select("d.id, d.libelle, c.nom, c.prenom, a.access, d.created")   
+             ->innerJoin("a.dossier", "d")
+             ->innerJoin("d.client", "c")                
+             ->setMaxResults(10)       
+             ->orderBy('a.access', 'DESC')                     
+             ->getQuery()
+             ->getResult();   
+      }
+
+
 }

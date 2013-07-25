@@ -20,10 +20,11 @@ class DefaultController extends Controller
     	$repository = $em->getRepository('ForthicimeMedecinBundle:LoginHistory');
 
         $year = $this->GetYearFromDB();  
+        $month = $this->GetMonth();
+
  		$form = $this->createFormBuilder()
-            ->add('Annee', 'choice', array(
-                'choices' => $year,
-            ))
+            ->add('Annee', 'choice', array('choices' => $year))
+            ->add('Mois',  'choice', array('choices' => $month))
             ->getForm();
         // ==========================================
 		
@@ -91,6 +92,12 @@ class DefaultController extends Controller
 	    	"nbDossier" => $nbDossier
 	    	);
 
+
+         // Get latest accessed dossier        
+        $repository = $em->getRepository('ForthicimeDossierBundle:AccessHistory');
+        $latest_read = $repository->getLatestReadFromAll();
+
+
         return $this->render('ForthicimeAdminBundle:Default:index.html.twig',
         	array(
         			"form" => $form->createView(),
@@ -98,7 +105,8 @@ class DefaultController extends Controller
         			"never_connected" => $never_connected,
                     "total_never_connected" => $total_never_connected,
                     "max_never_connected" => $max_not_connected,
-        			"statistic" => $statistic
+        			"statistic" => $statistic,
+                    "latest_read" => $latest_read
         		));
     }
 
@@ -157,6 +165,62 @@ class DefaultController extends Controller
     	return new Response(json_encode($total_count, JSON_NUMERIC_CHECK)); 
     }
 
+     // This method will return the number of connection
+    // made for each mounth and the number of medical 
+    // file that was accessed
+    public function GetConnectionCountByMonthAction()
+    {
+
+        // Get year and month value from query string
+        $request = $this->getRequest();
+        $year = $request->query->get('year');
+        $month = $request->query->get('month');
+
+        $m = array("Janvier" => 1, "Février" => 2, "Mars" => 3, "Avril" => 4, "Mai" => 5, "Juin" => 6, "Juillet" => 7, 
+            "Aout" => 8, "Septembre" => 9, "Octobre" => 10, "Novembre" => 11, "Decembre" => 12);
+
+        // Get repository
+        $em = $this->getDoctrine()->getManager();
+
+        $total_count = array();
+
+
+        $number_of_day = cal_days_in_month(CAL_GREGORIAN, $m[$month], $year);
+
+        //      Get count per day
+        for ($i=1; $i <= $number_of_day; $i++) { 
+    
+            $date_from = new \DateTime($year."-".$m[$month]."-".$i." 00:00:00");
+            $date_to = new \DateTime($year."-".$m[$month]."-".$i." 24:00:00");   
+    
+            // Get number of connection
+            $loginRepo = $em->getRepository('ForthicimeMedecinBundle:LoginHistory');
+            $totalConnection = $loginRepo->createQueryBuilder("l")
+                     ->select("COUNT(l.login)")                     
+                     ->where("l.login BETWEEN :date_from AND :date_to")
+                     ->setParameter('date_from', $date_from)
+                     ->setParameter('date_to', $date_to)
+                     ->getQuery()
+                     ->getSingleScalarResult();                 
+
+             // Get number of accessed file
+             $dossiers = $em->getRepository('ForthicimeDossierBundle:AccessHistory');
+             $totalAccess = $dossiers->createQueryBuilder("d")
+                     ->select("COUNT(d.access)")                     
+                     ->where("d.access BETWEEN :date_from AND :date_to")
+                     ->setParameter('date_from', $date_from)
+                     ->setParameter('date_to', $date_to)
+                     ->getQuery()
+                     ->getSingleScalarResult();                 
+
+            $total_count[] = array($i, 
+                                   $totalConnection, 
+                                   $totalAccess);           
+        }
+
+        return new Response(json_encode($total_count, JSON_NUMERIC_CHECK)); 
+    }
+
     // Return all the available years in the database
     private function GetYearFromDB()
     {
@@ -176,6 +240,13 @@ class DefaultController extends Controller
         }
 
         return $year;
+    }
+
+    private function GetMonth()
+    {
+        $month = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre");
+
+        return $month;
     }
 
  	public function loginAction()

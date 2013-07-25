@@ -100,9 +100,9 @@
 
 			<div id="tabs">
 			  <ul>
-			    <li><a href="/forthicime/admin/synchronizationDetail/medecin">Medecin</a></li>
-			    <li><a href="/forthicime/admin/synchronizationDetail/client">Client</a></li>
-			    <li><a href="/forthicime/admin/synchronizationDetail/dossier">Dossier</a></li>
+			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/medecin">Medecin</a></li>
+			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/client">Client</a></li>
+			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/dossier">Dossier</a></li>
 			  </ul>
 			  <div id="tabs-default" class="ui-tabs-panel"></div>
 			</div>
@@ -134,7 +134,7 @@
 			 $(".synchronization table tr").click(function(){
 			 	$(".synchronization tr.selected").removeClass("selected");	
 			 	$(this).addClass("selected");
-			 	synch = new SynchronizationDetail(
+			 	synch = new SynchronizationDetail( "{{ path('Forthicime_Synchronization_detail') }}",
 			 		$(this).children("td").first().text().trim()
 			 	);
 

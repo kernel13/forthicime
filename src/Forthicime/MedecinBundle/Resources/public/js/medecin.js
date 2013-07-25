@@ -21,7 +21,7 @@ function BannerSingleton() {
   // Hide the banner
   function setHidden()
   {
-     $('#siteHeader').css('top', -200);
+     $('#siteHeader').css('top', -210);
      $.cookie("banner_status", "hidden");
   }
 
@@ -44,7 +44,7 @@ function BannerSingleton() {
   // Hide the banner with an annimation
   function hide(objThis)
   {
-     $('#siteHeader').animate({top: '-200'});
+     $('#siteHeader').animate({top: '-210'});
      $(objThis).html("<i class='icon-circle-arrow-down icon-white'>");
      $.cookie("banner_status", "hidden");
   }

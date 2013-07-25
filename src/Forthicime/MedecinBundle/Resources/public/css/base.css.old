@@ -1,5 +1,5 @@
 body{
-	background-color: #616a73;
+	background-color: #0b0b0b;
 	padding-top: 250px;
 }
 
@@ -7,7 +7,7 @@ body{
 /*==================	SITE HEADER		==================*/
 #siteHeader{
 	height: 240px;	
-	background-color: rgba(97, 105, 115, 0.9);
+	background-color: rgba(64, 69, 97, 0.9);
 	font-size: 10px;
 }
 
@@ -20,7 +20,7 @@ position: absolute;
 	top: 70px;
 	width: 100%;
 	height: 20px;
-	background-color: #616973;
+	background-color: #cbd9ee;
 	z-index: -1000;
 	left: 0;
 }
@@ -43,7 +43,7 @@ position: absolute;
 }
 
 #banner-footer{
- 	background-color: #979ca0;
+ 	background-color: #2f334b;
 }
 
 .hide-banner{
@@ -66,7 +66,7 @@ position: absolute;
 
 #menu a{
 	color: white;
-	font-size: 1.5em;
+	font-size: 1em;
 }
 
 #menu img{
@@ -89,31 +89,27 @@ position: absolute;
 
 /*================== PANEL INFO	==================*/
 .panel{
-	background-color: white;	
+	background-color: #ebebeb;	
 }
 
 .panel li a, .panel li{
-	color: black;
-	font-size: 10		px;
+	color: #788d28;
+	font-size: 9px;
 }
 
 .panel li:first-child{
-	background-color: #1985c0;
+	background-color: #3c4157;
 	color: #fafafa;
 	font-family: 'Corben', cursive;
 }
 
-.panel div{
-	display: inline-block; 
-	width: 120px; 
-	text-align: center;
+.panel span.left{
+	float: left;
 }
 
-.panel div:first-child{
-	text-align: left;
-	width: 170px;
+.panel span.right{
+	float: right;
 }
-
 
 
 /*================== CONTENT ==================*/
@@ -159,8 +155,8 @@ position: absolute;
    border-radius: 0;
    height: 34px;
    background: #fff url("/bundles/forthicimeadmin/images/1372282816_arrow_sans_down.png") no-repeat right center;
-   background-color: white;
-   color: black;
+   background-color: #59617d;
+   color: white;
    padding-left: 10px;
    text-indent:20px;
    margin-right: 10px;

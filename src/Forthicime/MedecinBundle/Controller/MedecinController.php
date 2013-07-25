@@ -11,7 +11,7 @@ class MedecinController extends Controller
 {
     public function indexAction($page)
     {
-        $per_page = 20;
+        $per_page = 30;
         $usr= $this->get('security.context')->getToken()->getUser();
 
     	# Get all patient

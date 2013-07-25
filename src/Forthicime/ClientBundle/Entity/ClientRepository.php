@@ -9,7 +9,7 @@ class ClientRepository extends EntityRepository
 	public function getLatest($medecin)
 	{
 		return $this->createQueryBuilder("c")
-             ->select("c.id, c.nom, c.prenom, c.NomPrenom")
+             ->select("c.id, c.nom, c.prenom, c.NomPrenom, c.created")
              ->distinct("c.NomPrenom")
              ->leftJoin("c.dossiers", "d")
              ->where("d.medecin = :medecin")
