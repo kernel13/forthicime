@@ -4,6 +4,8 @@ function MonthChart(url)
 	this.__data = [];
 	this.__url = url;
 	this.__googleLoaded = false;	
+	this.__month;
+	this.__year;
 
 	this.drawChart = drawChart;
 	this.__drawChart = __drawChart;
@@ -17,6 +19,9 @@ function MonthChart(url)
 	//
 	function drawChart(year, month)
 	{
+		__self.__month = month;
+		__self.__year = year;
+
 		$("#month_chart_div").empty();
 		__self.__getData(year, month);
 
@@ -38,12 +43,12 @@ function MonthChart(url)
 	function __drawChart() 
 	{	
 		__self.__googleLoaded = true;
-		__self.__data.unshift(['Jour', 'Nombre de connections', 'Nombre de dossiers visualisés']);
+		__self.__data.unshift(['Jour', 'Nombre de connections', 'Nombre d\'analyse visualisés']);
 
 		var data = google.visualization.arrayToDataTable(__self.__data);
 
 	    var options = {
-	      title: 'Activités entregistrées',
+	      title: "Activitées: " + __self.__month.toUpperCase() + " " + __self.__year,
 	      hAxis: {title: 'Jour', titleTextStyle: {color: 'red'}}
 	    };
 

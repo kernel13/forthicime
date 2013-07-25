@@ -4,6 +4,8 @@ function ChartBart(url)
 	var __self = this;
 	this.__data = [];
 	this.__url = url;
+	this.__year = "";
+
 	this.__googleLoaded = false;
 
 	this.drawChart = drawChart;
@@ -18,6 +20,7 @@ function ChartBart(url)
 	//
 	function drawChart(year)
 	{
+		__self.__year = year;
 		$("#chart_div").empty();
 		__self.__getData(year);
 
@@ -39,12 +42,12 @@ function ChartBart(url)
 	function __drawChart() 
 	{	
 		__self.__googleLoaded = true;
-		__self.__data.unshift(['Year', 'Nombre de connections', 'Nombre de dossiers visualisés']);
+		__self.__data.unshift(['Year', 'Nombre de connections', 'Nombre d\'analyse visualisés']);
 
 		var data = google.visualization.arrayToDataTable(__self.__data);
 
 	    var options = {
-	      title: 'Activités entregistrées',
+	      title: "Activitées: Année " + __self.__year,
 	      hAxis: {title: 'Mois', titleTextStyle: {color: 'red'}}
 	    };
 
