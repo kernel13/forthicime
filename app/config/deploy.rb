@@ -52,11 +52,11 @@ logger.level = Logger::MAX_LEVEL
 # =============================================================================
 #set :shared_files, ["app/config/parameters.yml"]
 #set :shared_children, [app_path + "/logs", "vendor"]
-#set :use_composer, true
-#set :update_vendors, false
+set :use_composer, true
+set :update_vendors, false
 #set :dump_assetic_assets, false
 #set :composer_options, "--no-dev --prefer-dist --optimize-autoloader --no-progress""
-#set :composer_options, "--no-scripts --prefer-source --no-dev --dry-run"
+set :composer_options, "--no-scripts --no-dev"
 #set :copy_vendors, true
 
 # Assets install
