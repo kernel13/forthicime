@@ -65,7 +65,8 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                  $medecin->setPassword($password);
 
                  $em->persist($medecin);
-                 $synchronizationLine->setReturnCode(0);               
+                 $synchronizationLine->setReturnCode(0);   
+                 $synchronizationLine->setTableId($medecin->getId());            
                 } catch(Exception $e) {
                   $synchronizationLine->setReturnCode($e->getCode());
                   $synchronizationLine->setMessage($e->getMessage());
@@ -91,6 +92,7 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                  $medecin->setPassword($password);
                  
                  $synchronizationLine->setReturnCode(0);
+                 $synchronizationLine->setTableId($medecin->getId());            
                } catch(\Exception $e) {
                   $synchronizationLine->setReturnCode($e->getCode());
                   $synchronizationLine->setMessage($e->getMessage());
@@ -112,7 +114,8 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                   $medecin = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
 
                   $em->remove($medecin);
-                  $synchronizationLine->setReturnCode(0);               
+                  $synchronizationLine->setReturnCode(0);   
+                  $synchronizationLine->setTableId($medecin->getId());                        
                 } catch(\Exception $e) {
                   $synchronizationLine->setReturnCode($e->getCode());
                   $synchronizationLine->setMessage($e->getMessage());
@@ -133,7 +136,8 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                # Create a new synchronizationLine
               
                $synchronizationLine->setCommand("InvalidCommand");
-               $synchronizationLine->setReturnCode(-1);               
+               $synchronizationLine->setReturnCode(-1); 
+               $synchronizationLine->setTableId($medecin->getId());                          
               // $synchronizationLine->setColumnValues($serializer->serialize($medecin, 'json'));           
                $synchronizationLine->setMessage("L'opération fourni est invalide. Attendue: Ajout, Modif ou Supprime et a obtenue: ".$action);
 

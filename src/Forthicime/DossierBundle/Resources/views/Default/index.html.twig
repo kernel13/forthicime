@@ -54,8 +54,7 @@
 
 					<table class="table table-striped">
 
-					<tr>				
-						<th>Numeric</th>
+					<tr>										
 						<th>Libéllé</th>
 						<th>Créé le</th>
 						<th></th>
@@ -63,7 +62,6 @@
 
 				{% for dossier in dossiers %}
 						 <tr>
-			 			 	<td> {{ dossier.numeric }}</td>
 			 			 	<td> {{ dossier.libelle	 }}</td>
 			 			 	<td> {{ dossier.created|date('d-m-Y H:i')  }}</td>					 		
 			 			 	<td>

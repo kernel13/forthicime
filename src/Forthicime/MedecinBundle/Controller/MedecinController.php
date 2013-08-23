@@ -11,8 +11,14 @@ class MedecinController extends Controller
 {
     public function indexAction($page)
     {
+
         $per_page = 30;
         $usr= $this->get('security.context')->getToken()->getUser();
+
+        if ($usr->getIdentifiant() == 'admin')
+        {
+            return $this->redirect($this->generateUrl('forthicime_admin_homepage'));
+        }
 
     	# Get all patient
         $em = $this->getDoctrine()->getManager();
@@ -61,7 +67,8 @@ class MedecinController extends Controller
                     'last_page' => ceil($total / $per_page) -1,
                     'latest_client' => $latest_client,
                     'latest_dossiers' => $latest_dossiers,
-                    'latest_read' => $latest_read));
+                    'latest_read' => $latest_read,
+                    'identifiant' => $usr->getIdentifiant()));
                     //'last_logged_in' => $last_logged_in  ));
     }
 

@@ -11,7 +11,7 @@
 {% block menu %}
 	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 		 <span><i class="icon-home icon-white"> </i> <a href="{{ path('forthicime_admin_homepage') }}">Accueil</a></span>
-		 <span><i class="icon-refresh icon-white"> </i> <a href="{{ path('forthicime_synchronization') }}">Synchronization</a></span>		 
+		 <span><i class="icon-refresh icon-white"> </i> <a href="{{ path('forthicime_synchronization') }}">Synchronisation</a></span>		 
          <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">Se déconnecter</a></span>
      
      {% endif %}
@@ -50,7 +50,7 @@
 
 
 		<!-- DERNIER DOSSIER LU -->
-		{% include 'ForthicimeMedecinBundle:Medecin:_read_dossier.html.twig' %}
+		{% include 'ForthicimeAdminBundle:Default:_read_dossier.html.twig' %}
 		<br />
 
 

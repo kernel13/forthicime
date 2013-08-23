@@ -14,6 +14,12 @@ class DefaultController extends Controller
 
     	$logger = $this->get('logger');
 
+        $usr= $this->get('security.context')->getToken()->getUser();
+        if ($usr->getIdentifiant() != "admin")
+        {
+            return $this->redirect($this->generateUrl('_welcome'));
+        }
+
 		// ======================================
     	// Get repository
     	$em = $this->getDoctrine()->getManager();
@@ -22,9 +28,12 @@ class DefaultController extends Controller
         $year = $this->GetYearFromDB();  
         $month = $this->GetMonth();
 
+        $currentDate = new \DateTime();
+        $currentMonth = intval($currentDate->format('m')) - 1;
+        
  		$form = $this->createFormBuilder()
             ->add('Annee', 'choice', array('choices' => $year))
-            ->add('Mois',  'choice', array('choices' => $month))
+            ->add('Mois',  'choice', array('choices' => $month, 'data' => $currentMonth))
             ->getForm();
         // ==========================================
 		
@@ -106,7 +115,8 @@ class DefaultController extends Controller
                     "total_never_connected" => $total_never_connected,
                     "max_never_connected" => $max_not_connected,
         			"statistic" => $statistic,
-                    "latest_read" => $latest_read
+                    "latest_read" => $latest_read,
+                    "identifiant" => $usr->getIdentifiant()
         		));
     }
 
@@ -125,8 +135,8 @@ class DefaultController extends Controller
   	
     	// Setup mounth array
     	$mounth = array(1 => "Janvier", "Février", "Mars", "Avril", 
-    					 	 "Mai", "Juin", "Juillet", "Aout", "Septembre", 
-    					 	 "Octobre", "Novembre", "Decembre");
+    					 	 "Mai", "Juin", "Juillet", "Août", "Septembre", 
+    					 	 "Octobre", "Novembre", "Décembre");
 
 
 		$total_count = array();
@@ -244,7 +254,7 @@ class DefaultController extends Controller
 
     private function GetMonth()
     {
-        $month = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre");
+        $month = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre");
 
         return $month;
     }

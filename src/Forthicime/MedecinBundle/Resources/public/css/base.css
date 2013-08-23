@@ -75,9 +75,9 @@ position: absolute;
 }
 
 #menuInfoBar{
-	color: #ffcd41;
+	color: #1d88d8;
 	margin-top: 10px;
-	font-size: 12px;
+	font-size: 16px;
 	float: left;
 }
 
@@ -94,7 +94,7 @@ position: absolute;
 
 .panel li a, .panel li{
 	color: black;
-	font-size: 10		px;
+	font-size: 10px;
 }
 
 .panel li:first-child{
@@ -105,13 +105,18 @@ position: absolute;
 
 .panel div{
 	display: inline-block; 
-	width: 120px; 
+	width: 90px; 
 	text-align: center;
 }
 
 .panel div:first-child{
 	text-align: left;
-	width: 170px;
+	width: 100px;
+}
+
+.panel div:last-child{
+	text-align: right;
+	width: 130px;
 }
 
 

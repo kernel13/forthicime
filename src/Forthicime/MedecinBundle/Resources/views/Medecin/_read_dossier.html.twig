@@ -5,7 +5,7 @@
 		<a href="{{ path('forthicime_dossier', {'id': dossier.id }) }}"> 
 			<div>{{ dossier.nom|lower|capitalize  }} {{ dossier.prenom|lower|capitalize }}</div>
 			<div>{{ dossier.created|date('d-m-Y H:i')  }} </div>
-			<div>{{ dossier.libelle }}</div>			
+			<div>{{ dossier.libelle }}</div>	
 		</a>
 		<span style="clear: both"/>
 	</li>						 

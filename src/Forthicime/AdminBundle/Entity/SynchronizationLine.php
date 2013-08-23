@@ -45,6 +45,13 @@ class SynchronizationLine
     private $tableName;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="tableId", type="integer")
+     */
+    private $tableId;
+
+    /**
      * @var text
      *
      * @ORM\Column(name="columnValues", type="text", nullable=true)
@@ -162,6 +169,28 @@ class SynchronizationLine
     public function getTableName()
     {
         return $this->tableName;
+    }
+
+    /**
+     * Set tableId
+     *
+     * @param integer $tableId
+     * @return SynchronizationLine
+     */
+    public function setTableId($tableId)
+    {
+        $this->tableId = $tableId;
+    
+        return $this;
+    }
+
+    /** Get tableId
+     *
+     * @return integer 
+     */
+    public function getTableId()
+    {
+        return $this->tableId;
     }
 
     /**

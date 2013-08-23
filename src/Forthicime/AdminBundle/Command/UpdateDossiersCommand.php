@@ -76,6 +76,8 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                    $em->persist($dossier);
                    $em->flush();
                    $synchronizationLine->setReturnCode(0);
+                   $synchronizationLine->setTableId($dossier->getId());
+
                 } catch(\Exception $e) {
                   $synchronizationLine->setReturnCode($e->getCode());
                   $synchronizationLine->setMessage($e->getMessage());
@@ -101,8 +103,8 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                    $dossier->setClient($c);
                    $dossier->setNumeric($numeric);
                    $dossier->setLibelle($libelle);                   
-                   $synchronizationLine->setReturnCode(0);               
-
+                   $synchronizationLine->setReturnCode(0);        
+                   $synchronizationLine->setTableId($dossier->getId());       
               } catch(\Exception $e) {
                   $synchronizationLine->setReturnCode($e->getCode());
                   $synchronizationLine->setMessage($e->getMessage());
@@ -125,7 +127,8 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                   $dossier = $em->getRepository('ForthicimeDossierBundle:Dossier')->find($id);
 
                   $em->remove($dossier);
-                  $synchronizationLine->setReturnCode(0);                          
+                  $synchronizationLine->setReturnCode(0);      
+                  $synchronizationLine->setTableId($dossier->getId());                    
                 }catch(\Exception $e){
                   $synchronizationLine->setReturnCode($e->getCode());
                   $synchronizationLine->setMessage($e->getMessage());
@@ -139,8 +142,6 @@ class UpdateDossiersCommand extends ContainerAwareCommand
 
                break;    
            default:
-               
-               $dossier = new Dossier();
                $dossier = $em->getRepository('\Forthicime\DossierBundle\Entity\Dossier')->find($id);
                $m = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($medecin);            
                $dossier->setMedecin($m);
@@ -154,6 +155,7 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                $synchronizationLine->setReturnCode(-1);  
                //$synchronizationLine->setColumnValues($serializer->serialize($dossier, 'json'));           
                $synchronizationLine->setMessage("L'opération fourni est invalide. Attendue: Ajout, Modif ou Supprime et a obtenue: ".$action);
+               $synchronizationLine->setTableId($dossier->getId());
 
                $em->persist($synchronizationLine);
                $em->flush();  

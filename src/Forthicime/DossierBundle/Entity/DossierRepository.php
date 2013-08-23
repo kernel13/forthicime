@@ -11,7 +11,7 @@ class DossierRepository extends EntityRepository
 	{
 		return $this->createQueryBuilder("d")
              ->select("d.id, d.libelle, c.nom, c.prenom, d.created")   
-             ->leftJoin("d.client", "c")            
+             ->leftJoin("d.client", "c")           
              ->where("d.medecin = :medecin")
              ->setParameter('medecin', $medecin)    
              ->setFirstResult(0)

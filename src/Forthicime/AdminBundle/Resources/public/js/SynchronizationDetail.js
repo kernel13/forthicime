@@ -81,15 +81,15 @@ function SynchronizationDetail(path, synchId)
 			 html = html + "<tr>";
 			 html = html + "<th>ID</th>";
 			 html = html + "<th>Action</th>";
-			 html = html + "<th>Code Retour</th>";
-			 html = html + "<th>Table</th>";
+			 html = html + "<th>Status</th>";
+			 html = html + "<th>Nom</th>";
 			 html = html + "</tr>";
 		for(var item in data){
 			 html = html + "<tr>";
 			 html = html + "<td>" + data[item].id + "</td>";
 			 html = html + "<td>" + data[item].command + "</td>";
-			 html = html + "<td>" + data[item].returnCode + "</td>";
-			 html = html + "<td>" + data[item].tableName + "</td>";
+			 html = html + "<td>" + ( data[item].returnCode == 0 ? "ok" : "erreur" )  + "</td>";
+			 html = html + "<td>" + data[item].name + "</td>";
 			 html = html + "</tr>";
 		}
 
@@ -162,7 +162,7 @@ function SynchronizationDetail(path, synchId)
 
 	function IsSuccess(elem)
 	{
-		return $(elem).children("td").eq(2).text() == 0;
+		return $(elem).children("td").eq(2).text() == "ok";
 	}
 
 	function ShowSuccess()
@@ -172,7 +172,7 @@ function SynchronizationDetail(path, synchId)
 
 	function IsError(elem)
 	{
-		return $(elem).children("td").eq(2).text() != 0;
+		return $(elem).children("td").eq(2).text() == "erreur";
 	}
 
 	function ShowError()

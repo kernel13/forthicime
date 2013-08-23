@@ -62,6 +62,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
                    $em->persist($client);
                    
                    $synchronizationLine->setReturnCode(0);
+                   $synchronizationLine->setTableId($client->getId());            
                } catch(\Exception $e) {
                   $synchronizationLine->setReturnCode($e->getCode());
                   $synchronizationLine->setMessage($e->getMessage());
@@ -96,7 +97,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
                                   
                 } //finally {
                   $synchronizationLine->setCommand($action);   
-
+                  $synchronizationLine->setTableId($client->getId());            
                   //$serializedClient = $serializer->serialize($client, 'json');                 
                   //$synchronizationLine->setColumnValues($serializedClient);
                  // $synchronizationLine->setOldColumnValues($oldValue);
@@ -129,7 +130,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
 
                   } //finally {
                      $synchronizationLine->setCommand($action);
-
+                     $synchronizationLine->setTableId($client->getId());            
                      //$synchronizationLine->setOldColumnValues($serializedClient);
                      $em->persist($synchronizationLine);
                      $em->flush();      
@@ -150,7 +151,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
                //$serializedClient = $serializer->serialize($client, 'json');  
                //$synchronizationLine->setColumnValues(json_encode($serializedClient)); 
                $synchronizationLine->setMessage("L'opération fourni est invalide. Attendue: Ajout, Modif ou Supprime et a obtenue: ".$action);
-
+               $synchronizationLine->setTableId($client->getId());            
                $em->persist($synchronizationLine);
                $em->flush();  
 

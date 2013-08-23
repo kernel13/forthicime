@@ -47,6 +47,9 @@ function BannerSingleton() {
      $('#siteHeader').animate({top: '-210'});
      $(objThis).html("<i class='icon-circle-arrow-down icon-white'>");
      $.cookie("banner_status", "hidden");
+
+     $("html, body").animate({ scrollTop: 260 }, "slow");
+     return false;
   }
 
   // Show the banner with an annimation
@@ -55,6 +58,8 @@ function BannerSingleton() {
      $('#siteHeader').animate({top: '0'});
      $(objThis).html("<i class='icon-circle-arrow-up icon-white'>");
      $.cookie("banner_status", "shown");
+     $("html, body").animate({ scrollTop: 0 }, "slow");
+     return false;
   }
 
 }  

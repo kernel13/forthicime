@@ -10,9 +10,9 @@
 
 {% block menu %}
 	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-		 <span><i class="icon-home icon-white"> </i> <a href="{{ path('forthicime_admin_homepage') }}">HOME</a></span>
-		 <span><i class="icon-refresh icon-white"> </i> <a href="{{ path('forthicime_synchronization') }}">SYNCHRONIZATION</a></span>		 
-         <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">LOGOUT</a></span>
+		 <span><i class="icon-home icon-white"> </i> <a href="{{ path('forthicime_admin_homepage') }}">Accueil</a></span>
+		 <span><i class="icon-refresh icon-white"> </i> <a href="{{ path('forthicime_synchronization') }}">Synchronisation</a></span>		 
+         <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">Se Déconnecter</a></span>
      
      {% endif %}
 {% endblock %}
@@ -29,16 +29,16 @@
 	<div class="span6">			
 
 		<div class="content">
-				<h3>Liste des synchronizations</h3>
+				<h3>Liste des synchronisations</h3>
 				
 				<div class="synchronization">
 					<table class="table table-striped">
 
 					<tr>
 						<th>id</th>				
-						<th>Debut</th>
+						<th>Début</th>
 						<th>Fin</th>
-						<th>Nb synchronization</th>
+						<th>Nb synchronisation</th>
 						<th>nb succés</th>
 						<th>nb echec</th>
 					</tr>
@@ -57,6 +57,7 @@
 					</table>
 				</div>		
 		</div>
+
     </div>
 
     <div class="span3">
@@ -65,7 +66,7 @@
 
     		<div class="row offset1">
     			<div class="span5">
-    				<h3>Detail de la synchronization</h3>
+    				<h3>Detail de la synchronisation</h3>
     			</div>
 
     			<div id="sync_filter_layer" class="span7">
