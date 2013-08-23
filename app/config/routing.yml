@@ -29,12 +29,12 @@ login_check:
 logout:
     pattern: /forthicime/logout
 
-admin_login:
-     pattern:  /forthicime/admin/login
-     defaults: { _controller: ForthicimeAdminBundle:Default:login }
+# admin_login:
+#      pattern:  /forthicime/admin/login
+#      defaults: { _controller: ForthicimeAdminBundle:Default:login }
 
-admin_login_check:
-     pattern: /forthicime/admin/login_check
+# admin_login_check:
+#      pattern: /forthicime/admin/login_check
 
-admin_logout:
-     pattern: /forthicime/admin/logout
+# admin_logout:
+#      pattern: /forthicime/admin/logout
