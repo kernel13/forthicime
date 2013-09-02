@@ -27,11 +27,8 @@ i = 0
 backup = csv + '/cvsBackup'	
 processed = orders + '/processed'
 
-if (!Dir.exists?(backup))
-	Dir.mkdir(backup)
-
-if (!Dir.exists?(processed))
-	Dir.mkdir(processed)
+Dir.mkdir(backup) unless Dir.exists?(backup)
+Dir.mkdir(processed) unless Dir.exists?(processed)
 
 log.info "csv: #{csv}"
 log.info "orders: #{orders}"
