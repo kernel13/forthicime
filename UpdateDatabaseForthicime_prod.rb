@@ -24,7 +24,7 @@ orders = '/kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/Admin/An
 command = "php6 /kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/forthicime/current/app/console"
 i = 0
 
-backup = File.dirname(__FILE__) + '/Analyses/FichierCSV/cvsBackup'	
+backup = csv + '/cvsBackup'	
 processed = orders + '/processed'
 
 if (!Dir.exists?(backup))
