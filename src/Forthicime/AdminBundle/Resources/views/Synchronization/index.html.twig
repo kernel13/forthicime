@@ -34,8 +34,7 @@
 				<div class="synchronization">
 					<table class="table table-striped">
 
-					<tr>
-						<th>id</th>				
+					<tr>				
 						<th>Début</th>
 						<th>Fin</th>
 						<th>Nb synchronisation</th>
@@ -44,8 +43,7 @@
 					</tr>
 
 				{% for sync in synchronizations %}
-						 <tr>
-						 	<td> {{ sync.id }}</td>
+						 <tr>						
 						 	<td> {{ sync.start|date('Y-m-d H:i')  }} </td> 
 						 	<td> {{ sync.end|date('Y-m-d H:i')  }} </td> 
 						 	<td> {{ sync.nbTransaction  }} </td> 

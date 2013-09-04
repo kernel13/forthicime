@@ -79,14 +79,12 @@ function SynchronizationDetail(path, synchId)
 	{
 		 var html = "<table class='table table-striped'>";
 			 html = html + "<tr>";
-			 html = html + "<th>ID</th>";
 			 html = html + "<th>Action</th>";
 			 html = html + "<th>Status</th>";
 			 html = html + "<th>Nom</th>";
 			 html = html + "</tr>";
 		for(var item in data){
 			 html = html + "<tr>";
-			 html = html + "<td>" + data[item].id + "</td>";
 			 html = html + "<td>" + data[item].command + "</td>";
 			 html = html + "<td>" + ( data[item].returnCode == 0 ? "ok" : "erreur" )  + "</td>";
 			 html = html + "<td>" + data[item].name + "</td>";
