@@ -27,8 +27,8 @@ i = 0
 backup = csv + '/cvsBackup'	
 processed = orders + '/processed'
 
-Dir.mkdir(backup) unless Dir.exists?(backup)
-Dir.mkdir(processed) unless Dir.exists?(processed)
+Dir.mkdir(backup) unless Dir[backup] != nil 
+Dir.mkdir(processed) unless Dir[processed] != nil
 
 log.info "csv: #{csv}"
 log.info "orders: #{orders}"
@@ -189,21 +189,21 @@ log.info "======================================================================
 log.info " Clear old files "
 log.info "================================================================================"
 #Delete old csv files
-Dir.glob(backup + '/*.csv').
-  select{|f| File.mtime(f) < (Time.now - (60*720)) }.
-  each do |f| 
-  	FileUtils.rm(f) 
-  	log.info "Delete file: #{f}"
-  end
+# Dir.glob(backup + '/*.csv').
+#   select{|f| File.mtime(f) < (Time.now - (60*720)) }.
+#   each do |f| 
+#   	FileUtils.rm(f) 
+#   	log.info "Delete file: #{f}"
+#   end
 
-#Delete old order file
-Dir.glob(processed + '/*.csv').
-  select{|f| File.mtime(f) < (Time.now - (60*720)) }.
-  each do |f| 
-  	log.info "Deleting file: #{f}"
-  	FileUtils.rm(f) 
-  	log.info "File deleted"
-  end
+# #Delete old order file
+# Dir.glob(processed + '/*.csv').
+#   select{|f| File.mtime(f) < (Time.now - (60*720)) }.
+#   each do |f| 
+#   	log.info "Deleting file: #{f}"
+#   	FileUtils.rm(f) 
+#   	log.info "File deleted"
+#   end
 
 log.info "================================================================================"
 log.info "End of synchronization"

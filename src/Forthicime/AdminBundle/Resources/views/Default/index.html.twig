@@ -88,7 +88,10 @@
 
 	<div class="span6">			
 
-		{{ form_widget(form, { 'attr': {'class': 'form-inline'} }) }}
+
+		<form class="form-inline">
+  			{{ form_widget(form) }}
+		</form>
 
 		<script type="text/javascript">
 				var year = $("select#form_Annee option:selected").text();

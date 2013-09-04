@@ -93,7 +93,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
                } catch(\Exception $e) {
                                         
                   $synchronizationLine->setReturnCode($e->getCode());
-                  $synchronizationLine->setReturnCode($e->getMessage());
+                  $synchronizationLine->setMessage($e->getMessage());
                                   
                 } //finally {
                   $synchronizationLine->setCommand($action);   
@@ -126,7 +126,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
                   } catch(\Exception $e) {
 
                     $synchronizationLine->setReturnCode($e->getCode());
-                    $synchronizationLine->setReturnCode($e->getMessage());
+                    $synchronizationLine->setMessage($e->getMessage());
 
                   } //finally {
                      $synchronizationLine->setCommand($action);
