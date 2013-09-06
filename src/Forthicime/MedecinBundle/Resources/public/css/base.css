@@ -145,7 +145,7 @@ position: absolute;
 
 
 /*================== FORM ==================*/
-#form label{
+/*#form label{
 	color: white;	
 	margin-right: 20px;
 	padding-top: 5px;
@@ -174,7 +174,7 @@ position: absolute;
  #form{
  	margin-bottom: 20px; 	
  }
-
+*/
 /*================== LOGIN ==================*/   
 #loginForm label{
 	color: white;

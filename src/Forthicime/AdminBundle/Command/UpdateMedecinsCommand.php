@@ -10,10 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Forthicime\MedecinBundle\Entity\Medecin;
 use Forthicime\AdminBundle\Entity\SynchronizationLine;
-
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class UpdateMedecinsCommand extends ContainerAwareCommand
 {
@@ -39,12 +36,13 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
        $action = $input->getArgument('action');
        $synchronizationID = $input->getArgument('synchronizationID');
 
+       $logger = $this->getContainer()->get('logger');
+       $error = 0;
+
+       $logger->info("working on ".$name);
+
        $synchronizationLine = new SynchronizationLine();
-
-       //$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
-
        $em = $this->getContainer()->get('doctrine')->getManager();
-
        $synchronization = $em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
 
        if($this->IsNullOrEmpty($synchronization))
@@ -59,50 +57,44 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                $medecin = new Medecin();
 
                try{                 
+
                  $medecin->setId($id);
                  $medecin->setNom($name);                 
                  $medecin->setIdentifiant($username);                 
                  $medecin->setPassword($password);
-
                  $em->persist($medecin);
-                 $synchronizationLine->setReturnCode(0);   
-                 $synchronizationLine->setTableId($medecin->getId());            
-                } catch(Exception $e) {
-                  $synchronizationLine->setReturnCode($e->getCode());
+
+                } catch(\Exception $e) {
+                  
                   $synchronizationLine->setMessage($e->getMessage());
-                } //finally {
-                  $synchronizationLine->setCommand($action);
-                 // $synchronizationLine->setColumnValues($serializer->serialize($medecin, 'json'));
-                  $em->persist($synchronizationLine);
-                  $em->flush();
-                //}
+                  $error = $e->getCode(); 
+
+                  $logger->err("An error occured while adding the following medecin: ".$nom);
+                  $logger->err($e->getMessage());
+                             
+                } 
 
                break;
            
            case 'Modif':
               
                $medecin = null;
-               $oldValue = "";
 
                try {
+
                  $medecin = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
-                // $oldValue = $serializer->serialize($medecin, 'json');
                  $medecin->setNom($name);
                  $medecin->setIdentifiant($username);
                  $medecin->setPassword($password);
-                 
-                 $synchronizationLine->setReturnCode(0);
-                 $synchronizationLine->setTableId($medecin->getId());            
+                                 
                } catch(\Exception $e) {
-                  $synchronizationLine->setReturnCode($e->getCode());
+                  
                   $synchronizationLine->setMessage($e->getMessage());
-               } //finally {
-                  $synchronizationLine->setCommand($action);
-                //  $synchronizationLine->setColumnValues($serializer->serialize($medecin, 'json'));
-                //  $synchronizationLine->setOldColumnValues($oldValue);
-                  $em->persist($synchronizationLine);
-                  $em->flush();
-               //}
+                  $error = $e->getCode(); 
+
+                  $logger->err("An error occured while modifying the following medecin: ".$nom);
+                  $logger->err($e->getMessage());
+               } 
 
                break;
 
@@ -112,42 +104,40 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
 
                try {
                   $medecin = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
-
-                  $em->remove($medecin);
-                  $synchronizationLine->setReturnCode(0);   
-                  $synchronizationLine->setTableId($medecin->getId());                        
+                  $synchronizationLine->setMessage("Medecin ID: ".$medecin->getId()." Nom: ".$medecin->getNom());
+                  $em->remove($medecin);                  
                 } catch(\Exception $e) {
-                  $synchronizationLine->setReturnCode($e->getCode());
+
                   $synchronizationLine->setMessage($e->getMessage());
-                } //finally {
-                  $synchronizationLine->setCommand($action);
-                //  $synchronizationLine->setOldColumnValues($serializer->serialize($medecin, 'json'));
-                  $em->persist($synchronizationLine);
-                  $em->flush();
-               // }
+                  $error = $e->getCode(); 
+
+                  $logger->err("An error occured while deleting the following medecin: ".$nom);
+                  $logger->err($e->getMessage());
+                } 
 
                break;    
            default:
-               $medecin = new medecin();
-               $medecin->setId($id);
-               $medecin->setNom($name);
-               $medecin->setIdentifiant($username);     
 
-               # Create a new synchronizationLine
-              
-               $synchronizationLine->setCommand("InvalidCommand");
-               $synchronizationLine->setReturnCode(-1); 
-               $synchronizationLine->setTableId($medecin->getId());                          
-              // $synchronizationLine->setColumnValues($serializer->serialize($medecin, 'json'));           
-               $synchronizationLine->setMessage("L'opération fourni est invalide. Attendue: Ajout, Modif ou Supprime et a obtenue: ".$action);
-
-               $em->persist($synchronizationLine);
-               $em->flush();  
+               $synchronizationLine->setMessage("L'opération fourni est invalide pour le dossier ".$id.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
+               $error = -1;
 
                break;
        }
 
-      # unlink($file);
+       try {
+            $synchronizationLine->setCommand($action);
+            $synchronizationLine->setTableId($id);     
+            $synchronizationLine->setReturnCode($error);                     
+            $em->persist($synchronizationLine);
+            $em->flush();      
+                 
+        } catch (\Exception $e) {
+            $logger->err("An error occured during the save of the SynchronizationLine.");
+            $logger->err($e->getMessage());
+            $error = $e->getCode();
+        }
+
+        $output->writeln($error);
     }
 
     private function IsNullOrEmpty($value)

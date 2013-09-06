@@ -76,27 +76,30 @@ i = 0
 log.info "================================================================================"
 log.info " Updates client...							  "
 log.info "================================================================================"
-Dir.glob(orders + '/*Client*.csv') do |file|
-	i += 1
-	#if file.include?("Client")
-		puts file
-		log.debug "Read file #{file}"
-		action = File.open(file).read
+%w{Ajout Modif Supprime}.each do |w|
+	puts "Look for " + "*#{w}_Client*.csv"
+	Dir.glob(orders + "/*#{w}_Client*.csv") do |file|
+		i += 1
+		#if file.include?("Client")
+			puts file
+			log.debug "Read file #{file}"
+			action = File.open(file).read
 
-		puts "Gets parameters"
-		log.debug "Read parameters from #{action}"
-		id, nom, idFth, prenom, nomPrenom = action.force_encoding("iso-8859-1").split(';')		
+			puts "Gets parameters"
+			log.debug "Read parameters from #{action}"
+			id, nom, idFth, prenom, nomPrenom = action.force_encoding("iso-8859-1").split(';')		
 
-		a = File.basename(file, '.csv')
-		log.debug "Update client #{a.split('_').first}"
-		puts "Upate Client: " + a.split('_').first
-		log.debug "Running: #{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
-		puts "#{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
-		`#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom.chomp}" #{synchronizaitonID}`
+			a = File.basename(file, '.csv')
+			log.debug "Update client #{a.split('_').first}"
+			puts "Upate Client: " + a.split('_').first
+			log.debug "Running: #{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
+			puts "#{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
+			`#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom.chomp}" #{synchronizaitonID}`
 
-		log.info "Move file #{file}"
-		FileUtils.move(file, processed)	
-		log.info "--------------------------------------------------------------------------------"
+			log.info "Move file #{file}"
+			FileUtils.move(file, processed)	
+			log.info "--------------------------------------------------------------------------------"
+	end
 end
 log.info "================================================================================"
 log.info "#{i} client(s) where updated													  "
@@ -109,28 +112,31 @@ i = 0
 log.info "================================================================================"
 log.info " Updates medecin...							  "
 log.info "================================================================================"
-Dir.glob(orders + '/*Medecin*.csv') do |file|
-	#elsif file.include?("Medecin")
-		i += 1
-		puts file
-	    log.debug "Read file #{file}"
-		action = File.open(file).read
+%w{Ajout Modif Supprime}.each do |w|
+	puts "Look for " + "*#{w}_Medecin*.csv"
+	Dir.glob(orders + "/*#{w}_Medecin*.csv") do |file|
+		#elsif file.include?("Medecin")
+			i += 1
+			puts file
+		    log.debug "Read file #{file}"
+			action = File.open(file).read
 
-		puts "Get parameters"
-		log.debug "Read parameters from #{action}"
-		id, nom, identifiant, password, idFth = action.force_encoding("iso-8859-1").split(';')
+			puts "Get parameters"
+			log.debug "Read parameters from #{action}"
+			id, nom, identifiant, password, idFth = action.force_encoding("iso-8859-1").split(';')
 
-		a = File.basename(file, '.csv')
-		log.debug "Update client #{a.split('_').first}"
-		puts "Update Medecin: " + a.split('_').first
-		log.debug "Running: #{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
-		puts "#{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
+			a = File.basename(file, '.csv')
+			log.debug "Update client #{a.split('_').first}"
+			puts "Update Medecin: " + a.split('_').first
+			log.debug "Running: #{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
+			puts "#{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
 
-		`#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}" #{synchronizaitonID}` 
+			`#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}" #{synchronizaitonID}` 
 
-		log.info "Move file #{file}"
-		FileUtils.move(file, processed)			
-		log.info "--------------------------------------------------------------------------------"
+			log.info "Move file #{file}"
+			FileUtils.move(file, processed)			
+			log.info "--------------------------------------------------------------------------------"
+	end
 end
 log.info "================================================================================"
 log.info "#{i} medecin(s) where updated													  "
@@ -143,31 +149,34 @@ i = 0
 log.info "================================================================================"
 log.info " Updates dossier...							  "
 log.info "================================================================================"
-Dir.glob(orders + '/*Dossier*.csv') do |file|
-	#elsif file.include?("Dossier")
-		i += 1
-		puts file
-		log.debug "Read file #{file}"
-		action = File.open(file).read
+%w{Ajout Modif Supprime}.each do |w|
+	puts "Look for " + "*#{w}_Dossier*.csv"
+	Dir.glob(orders + "/*#{w}_Dossier*.csv") do |file|
+		#elsif file.include?("Dossier")
+			i += 1
+			puts file
+			log.debug "Read file #{file}"
+			action = File.open(file).read
 
-		puts "Get parameters"
-		log.debug "Read parameters from #{action}"
-		id, numeric, medecin, client, libelle, idAutre = action.force_encoding("iso-8859-1").split(';')
+			puts "Get parameters"
+			log.debug "Read parameters from #{action}"
+			id, numeric, medecin, client, libelle, idAutre = action.force_encoding("iso-8859-1").split(';')
 
-		puts "=======Client: " + client
+			puts "=======Client: " + client
 
-		a = File.basename(file, '.csv')
-		log.debug "Update dossier #{a.split('_').first}"
-		puts "Update Dossiers: " + a.split('_').first
-		log.debug "Running: #{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
-		puts "#{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
+			a = File.basename(file, '.csv')
+			log.debug "Update dossier #{a.split('_').first}"
+			puts "Update Dossiers: " + a.split('_').first
+			log.debug "Running: #{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
+			puts "#{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
 
-		`#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}" #{synchronizaitonID}`
+			`#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}" #{synchronizaitonID}`
 
-		log.info "Move file #{file}"
-		FileUtils.move(file, processed)	
-		log.info "--------------------------------------------------------------------------------"
-	#end
+			log.info "Move file #{file}"
+			FileUtils.move(file, processed)	
+			log.info "--------------------------------------------------------------------------------"
+		#end
+	end
 end
 log.info "================================================================================"
 log.info "#{i} medecin(s) where updated													  "

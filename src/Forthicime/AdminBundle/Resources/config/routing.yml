@@ -8,8 +8,8 @@ forthicime_connection_count_month:
     pattern: /GetConnectionCountByMonth
     defaults: {_controller: ForthicimeAdminBundle:Default:GetConnectionCountByMonth}
 forthicime_synchronization:
-    pattern: /synchronization
-    defaults: { _controller: ForthicimeAdminBundle:Synchronization:index }
+    pattern: /synchronization/{page}
+    defaults: { _controller: ForthicimeAdminBundle:Synchronization:index, page: 1 }
 Forthicime_Synchronization_detail:
     pattern: /synchronizationDetail/{category}/{synchronizationId}
     defaults: { _controller: ForthicimeAdminBundle:Synchronization:synchronizationDetail, category: "medecin", synchronizationId: 1 }

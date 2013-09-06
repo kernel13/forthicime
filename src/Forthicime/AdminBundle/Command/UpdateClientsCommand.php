@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Forthicime\ClientBundle\Entity\Client;
 use Forthicime\AdminBundle\Entity\SynchronizationLine;
 
+
 class UpdateClientsCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -36,6 +37,12 @@ class UpdateClientsCommand extends ContainerAwareCommand
        $action = $input->getArgument('action');
        $synchronizationID = $input->getArgument('synchronizationID');
 
+
+       $logger = $this->getContainer()->get('logger');
+       $error = 0;
+
+       $logger->info("working on ".$nom." ".$prenom);
+
        $synchronizationLine = new SynchronizationLine();
        //$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
 
@@ -59,24 +66,16 @@ class UpdateClientsCommand extends ContainerAwareCommand
                    $client->setNom($nom);
                    $client->setPrenom($prenom);
                    $client->setNomPrenom($nomPrenom);
-                   $em->persist($client);
-                   
-                   $synchronizationLine->setReturnCode(0);
-                   $synchronizationLine->setTableId($client->getId());            
+                   $em->persist($client);                        
                } catch(\Exception $e) {
-                  $synchronizationLine->setReturnCode($e->getCode());
+
                   $synchronizationLine->setMessage($e->getMessage());
-               } //finally {
-                  $synchronizationLine->setCommand($action);
 
-                  
-                  //$serializedClient = $serializer->serialize($client, 'json');              
-                  //$synchronizationLine->setColumnValues($serializedClient);                  
-
-                  $em->persist($synchronizationLine);
-                  $em->flush();
-              // }
-
+                  $logger->err("An error occured while adding the following client: ".$nom." ".$prenom);
+                  $logger->err($e->getMessage());
+                  $error = $e->getCode();                  
+               }
+              
                break;
            
            case 'Modif':
@@ -85,27 +84,23 @@ class UpdateClientsCommand extends ContainerAwareCommand
                $oldValue = "";
 
                try {
+
                   $client = $em->getRepository('ForthicimeClientBundle:Client')->find($id);
-                 // $oldValue = $serializer->serialize($client, 'json');
                   $client->setNom($nom);
                   $client->setPrenom($prenom);
                   $client->setNomPrenom($nomPrenom);
-               } catch(\Exception $e) {
-                                        
-                  $synchronizationLine->setReturnCode($e->getCode());
-                  $synchronizationLine->setMessage($e->getMessage());
-                                  
-                } //finally {
-                  $synchronizationLine->setCommand($action);   
-                  $synchronizationLine->setTableId($client->getId());            
-                  //$serializedClient = $serializer->serialize($client, 'json');                 
-                  //$synchronizationLine->setColumnValues($serializedClient);
-                 // $synchronizationLine->setOldColumnValues($oldValue);
-                   
-                  $em->persist($synchronizationLine);
-                  $em->flush();
-                //}
 
+               } catch(\Exception $e) {  
+
+                  $synchronizationLine->setMessage($e->getMessage());
+                  
+                  $logger->err("An error occured while modifying the following client: ".$nom." ".$prenom);
+                  $logger->err($e->getMessage());
+                  $error = $e->getCode();
+                } 
+
+              
+                  
                break;
 
            case 'Supprime':
@@ -113,52 +108,47 @@ class UpdateClientsCommand extends ContainerAwareCommand
                $client = new Client();
                $serializedClient = "";
                try {
-                      $client = $em->getRepository('ForthicimeClientBundle:Client')->find($id);
-                      //$serializedClient = $serializer->serialize($client, 'json');  
+                      $client = $em->getRepository('ForthicimeClientBundle:Client')->find($id);                  
                       $dossiers = $client->getDossiers();
 
                       foreach ($dossiers as $dossier) {
                    		   $client->removeDossiers($dossier);
                       }
 
+                      $synchronizationLine->setMessage("Client ID: ".$client->getId()." Nom: ".$client->getNomPrenom());
+
                       $em->remove($client);                      
-                      $synchronizationLine->setReturnCode(0);
                   } catch(\Exception $e) {
 
-                    $synchronizationLine->setReturnCode($e->getCode());
                     $synchronizationLine->setMessage($e->getMessage());
+                    $logger->err("An error occured while deleting the following client: ".$nom." ".$prenom);
+                    $logger->err($e->getMessage());
+                    $error = $e->getCode();
 
-                  } //finally {
-                     $synchronizationLine->setCommand($action);
-                     $synchronizationLine->setTableId($client->getId());            
-                     //$synchronizationLine->setOldColumnValues($serializedClient);
-                     $em->persist($synchronizationLine);
-                     $em->flush();      
-                 // }           
-
+                  } 
                break;    
-           default:
+           default:             
 
-               $client = new Client();
-               $client->setId($id);
-               $client->setNom($nom);
-               $client->setPrenom($prenom);
-               $client->setNomPrenom($nomPrenom);
-
-               // Create a new synchronizationLine              
-               $synchronizationLine->setCommand("InvalidCommand");
-               $synchronizationLine->setReturnCode(-1); 
-               //$serializedClient = $serializer->serialize($client, 'json');  
-               //$synchronizationLine->setColumnValues(json_encode($serializedClient)); 
-               $synchronizationLine->setMessage("L'opération fourni est invalide. Attendue: Ajout, Modif ou Supprime et a obtenue: ".$action);
-               $synchronizationLine->setTableId($client->getId());            
-               $em->persist($synchronizationLine);
-               $em->flush();  
-
+               // Create a new synchronizationLine                             
+               $synchronizationLine->setMessage("L'opération fourni est invalide pour le client ".$nom." ".$prenom.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
+               $error = -1;
                break;
        }
 
-       #unlink($file);
+       try {
+            $synchronizationLine->setCommand($action);
+            $synchronizationLine->setTableId($id);     
+            $synchronizationLine->setReturnCode($error);                     
+            $em->persist($synchronizationLine);
+            $em->flush();      
+                 
+        } catch (\Exception $e) {
+            $logger->err("An error occured during the save of the SynchronizationLine.");
+            $logger->err($e->getMessage());
+            $error = $e->getCode();
+        }
+
+        $output->writeln($error);
     }
 
     private function IsNullOrEmpty($value)
