@@ -43,7 +43,7 @@ function MonthChart(url)
 	function __drawChart() 
 	{	
 		__self.__googleLoaded = true;
-		__self.__data.unshift(['Jour', 'Nombre de connections', 'Nombre d\'analyses visualisés']);
+		__self.__data.unshift(['Jour', 'Nombre de connections', 'Nombre d\'analyses visualisées']);
 
 		var data = google.visualization.arrayToDataTable(__self.__data);
 

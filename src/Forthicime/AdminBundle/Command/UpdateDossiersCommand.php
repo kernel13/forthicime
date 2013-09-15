@@ -88,7 +88,7 @@ class UpdateDossiersCommand extends ContainerAwareCommand
               try {
                     $c = $em->getRepository('ForthicimeClientBundle:Client')->find($client);    
                     if($this->IsNullOrEmpty($c))
-                      throw new \Exception("Le client avec l'id ".$client." est introuvable" , -110);
+                      throw new \Exception("Le patient avec l'id ".$client." est introuvable" , -110);
                       
                } catch (\Exception $e) {                  
                   $synchronizationLine->setMessage($e->getMessage());
@@ -114,7 +114,7 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                       $synchronizationLine->setMessage($e->getMessage());
                       $error = $e->getCode();
 
-                      $logger->err("An error occured during the save of the Dossier ".$id);
+                      $logger->err("An error occured during the save of the analysis ".$id);
                       $logger->err($e->getMessage());
                     } 
                 }
@@ -155,17 +155,26 @@ class UpdateDossiersCommand extends ContainerAwareCommand
               {
                  // Modify the dossier
                  try{                
-                     $dossier = $em->getRepository('\Forthicime\DossierBundle\Entity\Dossier')->find($id);                                             
-                     $dossier->setMedecin($m);                   
-                     $dossier->setClient($c);
-                     $dossier->setNumeric($numeric);
-                     $dossier->setLibelle($libelle);                   
+                     $dossier = $em->getRepository('\Forthicime\DossierBundle\Entity\Dossier')->find($id);        
+
+                     if(!$this->IsNullOrEmpty($dossier))                                    
+                     { 
+                       $dossier->setMedecin($m);                   
+                       $dossier->setClient($c);
+                       $dossier->setNumeric($numeric);
+                       $dossier->setLibelle($libelle);   
+
+                       $em->flush();                  
+                     } else {
+                        $synchronizationLine->setMessage("L'analyse avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
+                        $error = -1;
+                     }
 
                 } catch(\Exception $e) {                  
                     $synchronizationLine->setMessage($e->getMessage());
                     $error = $e->getCode();
 
-                    $logger->err("An error occured during the save of the Dossier ".$id);
+                    $logger->err("An error occured during the save of the analysis ".$id);
                     $logger->err($e->getMessage());
                 } 
               }
@@ -178,8 +187,16 @@ class UpdateDossiersCommand extends ContainerAwareCommand
 
                try{
                   $dossier = $em->getRepository('ForthicimeDossierBundle:Dossier')->find($id);
-                  $synchronizationLine->setMessage("Dossier ID: ".$dossier->getId()." Libelle: ".$dossier->getNom());
-                  $em->remove($dossier);
+
+                  if(!$this->IsNullOrEmpty($dossier))                                    
+                  { 
+                     $synchronizationLine->setMessage("Dossier ID: ".$dossier->getId()." Libelle: ".$dossier->getNom());
+                     $em->remove($dossier);
+                     $em->flush();  
+                  } else {
+                    $synchronizationLine->setMessage("L'analyse avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
+                    $error = -1;
+                  }
                 }catch(\Exception $e){
                   $synchronizationLine->setMessage($e->getMessage());
                   $error = $e->getCode();

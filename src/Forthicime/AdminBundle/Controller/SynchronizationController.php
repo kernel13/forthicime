@@ -62,6 +62,7 @@ class SynchronizationController extends Controller
                                  );
 
        
+       $synchronization = $em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationId);
 
 
         //$serializer = $this->get('serializer');
@@ -101,7 +102,8 @@ class SynchronizationController extends Controller
                     "returnCode" => $value->getReturnCode(),
                     "tableName" => $value->getTableName(),
                     "name" => utf8_encode($nom),
-                    "message" => $value->getMessage()
+                    "message" => $value->getMessage(),
+                    "SynchTime" => $synchronization->getStart()
                 );
         }
 

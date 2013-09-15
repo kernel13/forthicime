@@ -55,15 +55,15 @@
 					<table class="table table-striped">
 
 					<tr>										
-						<th>Libéllé</th>
-						<th>Créé le</th>
+						<th>Date de disponibilité serveur</th>
+						<th>Date de l'analyse</th>
 						<th></th>
 					</tr>
 
 				{% for dossier in dossiers %}
 						 <tr>
-			 			 	<td> {{ dossier.libelle	 }}</td>
-			 			 	<td> {{ dossier.created|date('d-m-Y H:i')  }}</td>					 		
+						 	<td> {{ dossier.created|date('d-m-Y H:i')  }}</td>	
+			 			 	<td> {{ dossier.libelle	 }}</td>			 			 					 		
 			 			 	<td>
 			 					<a href="{{ path('forthicime_dossier', { 'id': dossier.id }) }}">
 						 		 <img style="width: 35px;" src="{{ asset('bundles/forthicimemedecin/images/dossier.png') }}" alt="Dossiers" />

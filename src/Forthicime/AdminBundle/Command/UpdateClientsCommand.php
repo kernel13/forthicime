@@ -66,7 +66,8 @@ class UpdateClientsCommand extends ContainerAwareCommand
                    $client->setNom($nom);
                    $client->setPrenom($prenom);
                    $client->setNomPrenom($nomPrenom);
-                   $em->persist($client);                        
+                   $em->persist($client);   
+                   $em->flush();                       
                } catch(\Exception $e) {
 
                   $synchronizationLine->setMessage($e->getMessage());
@@ -86,10 +87,17 @@ class UpdateClientsCommand extends ContainerAwareCommand
                try {
 
                   $client = $em->getRepository('ForthicimeClientBundle:Client')->find($id);
-                  $client->setNom($nom);
-                  $client->setPrenom($prenom);
-                  $client->setNomPrenom($nomPrenom);
 
+                  if(!$this->IsNullOrEmpty($client))                                    
+                  { 
+                    $client->setNom($nom);
+                    $client->setPrenom($prenom);
+                    $client->setNomPrenom($nomPrenom);
+                    $em->flush();  
+                  } else {
+                    $synchronizationLine->setMessage("Le client avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
+                    $error = -1;
+                  }
                } catch(\Exception $e) {  
 
                   $synchronizationLine->setMessage($e->getMessage());
@@ -109,15 +117,21 @@ class UpdateClientsCommand extends ContainerAwareCommand
                $serializedClient = "";
                try {
                       $client = $em->getRepository('ForthicimeClientBundle:Client')->find($id);                  
-                      $dossiers = $client->getDossiers();
+                      if(!$this->IsNullOrEmpty($client))                                    
+                      { 
+                          $dossiers = $client->getDossiers();
 
-                      foreach ($dossiers as $dossier) {
-                   		   $client->removeDossiers($dossier);
-                      }
+                          foreach ($dossiers as $dossier) {
+                       		   $client->removeDossiers($dossier);
+                          }
 
-                      $synchronizationLine->setMessage("Client ID: ".$client->getId()." Nom: ".$client->getNomPrenom());
+                          $synchronizationLine->setMessage("Client ID: ".$client->getId()." Nom: ".$client->getNomPrenom());
 
-                      $em->remove($client);                      
+                          $em->remove($client);      
+                      } else {
+                        $synchronizationLine->setMessage("Le client avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
+                        $error = -1;
+                      }                
                   } catch(\Exception $e) {
 
                     $synchronizationLine->setMessage($e->getMessage());

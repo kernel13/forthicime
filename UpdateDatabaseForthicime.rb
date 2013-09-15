@@ -102,10 +102,11 @@ i = 0
 log.info "================================================================================"
 log.info " Updates client...							  "
 log.info "================================================================================"
-
 %w{Ajout Modif Supprime}.each do |w|
 	log.info "Looking for " + "*#{w}_Client*.csv"
-	Dir.glob(orders + "/*#{w}_Client*.csv") do |file|
+	sorted_files = Dir.glob(orders + "/*#{w}_Client*.csv").sort!{|a,b| File.mtime(a) <=> File.mtime(b) }	
+	#Dir.glob(orders + "/*#{w}_Client*.csv") do |file|
+	sorted_files.each do |file|
 		i += 1
 		#if file.include?("Client")
 			puts file
@@ -141,7 +142,9 @@ log.info " Updates medecin...							  "
 log.info "================================================================================"
 %w{Ajout Modif Supprime}.each do |w|
 	log.info "Looking for " + "*#{w}_Medecin*.csv"
-	Dir.glob(orders + "/*#{w}_Medecin*.csv") do |file|
+	sorted_files = Dir.glob(orders + "/*#{w}_Medecin*.csv").sort!{|a,b| File.mtime(a) <=> File.mtime(b) }	
+	#Dir.glob(orders + "/*#{w}_Medecin*.csv") do |file|
+	sorted_files.each do |file|
 		#elsif file.include?("Medecin")
 			i += 1
 			
@@ -180,7 +183,9 @@ log.info " Updates dossier...							  "
 log.info "================================================================================"
 %w{Ajout Modif Supprime}.each do |w|
 	log.info "Looking for " + "*#{w}_Dossier*.csv"
-	Dir.glob(orders + "/*#{w}_Dossier*.csv") do |file|
+	sorted_files = Dir.glob(orders + "/*#{w}_Dossier*.csv").sort!{|a,b| File.mtime(a) <=> File.mtime(b) }	
+	#Dir.glob(orders + "/*#{w}_Dossier*.csv") do |file|
+	sorted_files.each do |file|
 		#elsif file.include?("Dossier")
 
 			i += 1
@@ -210,7 +215,7 @@ log.info "======================================================================
 end 
 
 log.info "================================================================================"
-log.info "#{i} medecin(s) where updated													  "
+log.info "#{i} dossier(s) where updated													  "
 log.info "================================================================================"
 
 log.info "Running: #{command} EndSynchronization #{synchronizaitonID}"

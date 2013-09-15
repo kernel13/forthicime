@@ -35,12 +35,12 @@
 			</li>
 
 			<li>
-				<div><i class="icon-user"></i> Clients:</div> 
+				<div><i class="icon-user"></i> Patients:</div> 
 				<div>{{ statistic.nbClient }}</div>
 				<br style="clear: both">
 			</li> 
 			<li>
-				<div><i class="icon-folder-open"></i> Analyes:</div> 
+				<div><i class="icon-folder-open"></i> Analyses:</div> 
 				<div>{{ statistic.nbDossier }}</div>
 				<br style="clear: both">
 			</li>
@@ -57,10 +57,14 @@
 		<!-- DERNIERE CONNECTION -->
 		<ul class="panel nav nav-list" style="font-size: 8pt;">
 		 	<li class="nav-header"><i class="icon-resize-small icon-white"> </i> Dernieres connections</li>
+		 	<li>
+		 		<div style="font-weight: bold">Nom</div>
+		 		<div style="font-weight: bold">Connecté le</div>
+		 	</li>
 		{% for medecin in last_connections %}
 			<li> 
 				<div>{{ medecin.nom|lower|capitalize }}</div>
-				<div>{{ medecin.login|date('d-m-Y H:i') }}</div>
+				<div>{{ medecin.login|date('d/m/Y H:i') }}</div>
 				<br style="clear: both"/>
 			</li>						 
 		{% endfor %}

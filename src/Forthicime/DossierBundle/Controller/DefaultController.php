@@ -36,6 +36,12 @@ class DefaultController extends Controller
                      ->getQuery()
                      ->getResult();
 
+        for ($i=0; $i < sizeof($dossiers); $i++) { 
+              $libelle = $dossiers[$i]->getLibelle();
+              $libelle = substr($libelle, 6, 2)."/".substr($libelle, 4, 2)."/".substr($libelle, 0, 4);
+              $dossiers[$i]->setLibelle($libelle);
+        }
+
         $total = $repository->createQueryBuilder("d")
                      ->select("COUNT(d.id)")                    
                      ->where("d.medecin = :medecin")

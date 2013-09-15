@@ -14,7 +14,7 @@ class AccessHistoryRepository extends EntityRepository
 {
 	public function getLatestRead($medecin)
 	{
-		return $this->createQueryBuilder("a")
+		$dossiers = $this->createQueryBuilder("a")
              ->select("d.id, d.libelle, c.nom, c.prenom, a.access, d.created, m.nom as nomMedecin")   
              ->innerJoin("a.dossier", "d")
              ->innerJoin("d.client", "c")                                
@@ -26,30 +26,18 @@ class AccessHistoryRepository extends EntityRepository
              ->getQuery()
              ->getResult();	
 
+            for ($i=0; $i < sizeof($dossiers); $i++) { 
+                  $libelle = $dossiers[$i]["libelle"];
+                  $libelle = substr($libelle, 6, 2)."/".substr($libelle, 4, 2)."/".substr($libelle, 0, 4);
+                  $dossiers[$i]["libelle"] = $libelle;
+            }
 
-            // $ql = $this->createQueryBuilder("aa");
-            // $access = $ql->select("ad")
-            //              ->from("Forthicime\DossierBundle\Entity\AccessHistory", "ad")
-            //              ->where("ad.medecin = :medecin")
-            //              ->setParameter('medecin', $medecin)    
-            //              ->orderBy('ad.access', 'DESC')
-            //              ->setMaxResults(10)
-            //              ->getDQL();
-
-            // $qle = $this->createQueryBuilder("dd");
-            // $dossiers = $qle->select("do, c")                                   
-            //                 ->from("Forthicime\DossierBundle\Entity\Dossier", "do")
-            //                 ->where($qle->expr()->in('do.id', $access))
-            //                 ->leftJoin("do.client", "c")
-            //                 ->getQuery()
-            //                 ->getResult();
-
-            // return $dossiers;
+            return $dossiers;            
 	}
 
       public function getLatestReadFromAll()
       {
-            return $this->createQueryBuilder("a")
+            $dossiers = $this->createQueryBuilder("a")
              ->select("d.id, d.libelle, c.nom, c.prenom, a.access, d.created, m.nom as nomMedecin")   
              ->innerJoin("a.dossier", "d")
              ->innerJoin("d.client", "c")                 
@@ -58,6 +46,14 @@ class AccessHistoryRepository extends EntityRepository
              ->orderBy('a.access', 'DESC')                     
              ->getQuery()
              ->getResult();   
+
+              for ($i=0; $i < sizeof($dossiers); $i++) { 
+                  $libelle = $dossiers[$i]["libelle"];
+                  $libelle = substr($libelle, 6, 2)."/".substr($libelle, 4, 2)."/".substr($libelle, 0, 4);
+                  $dossiers[$i]["libelle"] = $libelle;
+            }
+
+            return $dossiers;    
       }
 
 

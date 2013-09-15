@@ -63,6 +63,7 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                  $medecin->setIdentifiant($username);                 
                  $medecin->setPassword($password);
                  $em->persist($medecin);
+                 $em->flush();  
 
                 } catch(\Exception $e) {
                   
@@ -83,10 +84,17 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                try {
 
                  $medecin = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
-                 $medecin->setNom($name);
-                 $medecin->setIdentifiant($username);
-                 $medecin->setPassword($password);
-                                 
+
+                if(!$this->IsNullOrEmpty($medecin))                                    
+                { 
+                    $medecin->setNom($name);
+                    $medecin->setIdentifiant($username);
+                    $medecin->setPassword($password);
+                    $em->flush();          
+                } else {
+                  $synchronizationLine->setMessage("Le medecin avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
+                  $error = -1;
+                }
                } catch(\Exception $e) {
                   
                   $synchronizationLine->setMessage($e->getMessage());
@@ -104,8 +112,16 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
 
                try {
                   $medecin = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
-                  $synchronizationLine->setMessage("Medecin ID: ".$medecin->getId()." Nom: ".$medecin->getNom());
-                  $em->remove($medecin);                  
+
+                  if(!$this->IsNullOrEmpty($medecin))                                    
+                  {
+                      $synchronizationLine->setMessage("Medecin ID: ".$medecin->getId()." Nom: ".$medecin->getNom());
+                      $em->remove($medecin); 
+                      $em->flush();                   
+                  } else {
+                    $synchronizationLine->setMessage("Le medecin avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
+                    $error = -1;
+                  }
                 } catch(\Exception $e) {
 
                   $synchronizationLine->setMessage($e->getMessage());

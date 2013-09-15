@@ -105,7 +105,7 @@ position: absolute;
 
 .panel div{
 	display: inline-block; 
-	width: 90px; 
+	width: 87px; 
 	text-align: center;
 }
 
@@ -226,3 +226,7 @@ position: absolute;
 	color: white;
 }
 
+#syncTime{
+	color: #788d28;
+	font-size: 1.5em;
+}

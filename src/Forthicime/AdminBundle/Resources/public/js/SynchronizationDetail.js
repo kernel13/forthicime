@@ -33,6 +33,9 @@ function SynchronizationDetail(path, synchId)
 				$.getJSON( __self.__path + "/medecin/" + __self.__synchId, function(data, textStatus, jqXHR){									
 					$( "#tabs" ).tabs({ active: 0 });
 					$("#ui-tabs-1").html(__self.BuildHtml(data));	
+
+					$("#syncTime").append("<p>Synchronisation: " + data[0].SynchTime.date + "</p>")
+
 					__self.filter();
 				});	
 			});
@@ -74,6 +77,8 @@ function SynchronizationDetail(path, synchId)
 			$("#synchronizationDetail").fadeIn('slow');
 
 			$(".pagination").remove();
+
+			$("#synchronizations").remove();
 		}
 	}
 

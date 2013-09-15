@@ -28,7 +28,7 @@
 
 	<div class="span6">			
 
-		<div class="content">
+		<div id="synchronizations" class="content">
 				<h3>Liste des synchronisations</h3>
 				
 				<div class="synchronization">
@@ -79,6 +79,7 @@
     		<div class="row offset1">
     			<div class="span5">
     				<h3>Detail de la synchronisation</h3>
+    				<div id="syncTime"></div>
     			</div>
 
     			<div id="sync_filter_layer" class="span7">
@@ -113,9 +114,9 @@
 
 			<div id="tabs">
 			  <ul>
-			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/medecin">Medecin</a></li>
-			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/client">Client</a></li>
-			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/dossier">Dossier</a></li>
+			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/medecin">Medecins</a></li>
+			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/client">Patients</a></li>
+			    <li><a href="{{ path('Forthicime_Synchronization_detail') }}/dossier">Analyses</a></li>
 			  </ul>
 			  <div id="tabs-default" class="ui-tabs-panel"></div>
 			</div>

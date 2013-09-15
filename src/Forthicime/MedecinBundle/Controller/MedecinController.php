@@ -55,7 +55,7 @@ class MedecinController extends Controller
 
         // Get latest dossier added
         $repository = $em->getRepository('ForthicimeDossierBundle:Dossier');
-        $latest_dossiers = $repository->getLatest($usr->getId());
+        $latest_dossiers = $repository->getLatest($usr->getId());        
 
         // Get latest accessed dossier
         $repository = $em->getRepository('ForthicimeDossierBundle:AccessHistory');

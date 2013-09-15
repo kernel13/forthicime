@@ -9,7 +9,7 @@ class DossierRepository extends EntityRepository
 
  	public function getLatest($medecin)
 	{
-		return $this->createQueryBuilder("d")
+		$latest_dossiers = $this->createQueryBuilder("d")
              ->select("d.id, d.libelle, c.nom, c.prenom, d.created")   
              ->leftJoin("d.client", "c")           
              ->where("d.medecin = :medecin")
@@ -19,5 +19,13 @@ class DossierRepository extends EntityRepository
              ->orderBy('d.created')                     
              ->getQuery()
              ->getResult();
+
+            for ($i=0; $i < sizeof($latest_dossiers); $i++) { 
+                  $libelle = $latest_dossiers[$i]["libelle"];
+                  $libelle = substr($libelle, 6, 2)."/".substr($libelle, 4, 2)."/".substr($libelle, 0, 4);
+                  $latest_dossiers[$i]["libelle"] = $libelle;
+            }
+          
+            return $latest_dossiers;
 	}
 }
