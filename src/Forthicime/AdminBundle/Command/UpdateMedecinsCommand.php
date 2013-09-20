@@ -14,6 +14,11 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class UpdateMedecinsCommand extends ContainerAwareCommand
 {
+    private $synchronizationLine;
+    private $em;
+    private $logger;
+    private $error;
+
     protected function configure()
     {
         $this
@@ -25,6 +30,11 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
             ->addArgument('username', InputArgument::REQUIRED, 'Who do you want to greet?')
             ->addArgument('password', InputArgument::REQUIRED, 'Who do you want to greet?')
             ->addArgument('synchronizationID', InputArgument::REQUIRED, 'Who do you want to greet?');
+
+        $this->synchronizationLine = new SynchronizationLine();
+        $this->em = $this->getContainer()->get('doctrine')->getManager();
+        $this->logger = $this->getContainer()->get('logger');
+        $this->error = 0;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -36,21 +46,21 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
        $action = $input->getArgument('action');
        $synchronizationID = $input->getArgument('synchronizationID');
 
-       $logger = $this->getContainer()->get('logger');
-       $error = 0;
+       $this->logger->info("working on ".$name);
 
-       $logger->info("working on ".$name);
-
-       $synchronizationLine = new SynchronizationLine();
-       $em = $this->getContainer()->get('doctrine')->getManager();
-       $synchronization = $em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
+       // Get current synchronizaiton
+       $synchronization = $this->em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
 
        if($this->IsNullOrEmpty($synchronization))
          throw new \Exception("La synchronization en cours ne peut etre récupéré", -201);
 
-       $synchronizationLine->setSynchronization($synchronization);
-       $synchronizationLine->setTableName("medecin");   
+       // Initialize synchronization line
+       $this->synchronizationLine->setSynchronization($synchronization);
+       $this->synchronizationLine->setTableName("medecin");   
 
+       $this->logger->info("Action: ".$action);
+
+       // Execute action
        switch ($action) {
            case 'Ajout':
               
@@ -58,21 +68,25 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
 
                try{                 
 
-                 $medecin->setId($id);
-                 $medecin->setNom($name);                 
-                 $medecin->setIdentifiant($username);                 
-                 $medecin->setPassword($password);
-                 $em->persist($medecin);
-                 $em->flush();  
+                 $m = $this->em->getRepository('ForthicimeMedecinBundle:Medecin')->find($medecin);
 
+                 if( $this->IsNullOrEmpty($m) ){
+                     $medecin->setId($id);
+                     $medecin->setNom($name);                 
+                     $medecin->setIdentifiant($username);                 
+                     $medecin->setPassword($password);
+                     $this->em->persist($medecin);
+                     $this->em->flush();   
+                 } else {
+                    $this->synchronizationLine->setMessage("Le medecin avec l'ID ".$id." existe déjà");
+                 }
+                 
                 } catch(\Exception $e) {
-                  
-                  $synchronizationLine->setMessage($e->getMessage());
-                  $error = $e->getCode(); 
+                   
+                  $this->logger->err("An error occured while adding the following medecin: ".$nom);
+                  $this->logger->err($e->getMessage());                
+                  $this->error = $e->getCode();        
 
-                  $logger->err("An error occured while adding the following medecin: ".$nom);
-                  $logger->err($e->getMessage());
-                             
                 } 
 
                break;
@@ -83,25 +97,24 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
 
                try {
 
-                 $medecin = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
+                 $medecin = $this->em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
 
                 if(!$this->IsNullOrEmpty($medecin))                                    
                 { 
                     $medecin->setNom($name);
                     $medecin->setIdentifiant($username);
                     $medecin->setPassword($password);
-                    $em->flush();          
+                    $this->em->flush();          
                 } else {
-                  $synchronizationLine->setMessage("Le medecin avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
-                  $error = -1;
+                  $this->synchronizationLine->setMessage("Le Medecin avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
+                  $this->error = -1;
                 }
                } catch(\Exception $e) {
                   
-                  $synchronizationLine->setMessage($e->getMessage());
-                  $error = $e->getCode(); 
+                  $this->logger->err("An error occured while modifying the following medecin: ".$nom);
+                  $this->logger->err($e->getMessage());
+                  $this->error = $e->getCode();    
 
-                  $logger->err("An error occured while modifying the following medecin: ".$nom);
-                  $logger->err($e->getMessage());
                } 
 
                break;
@@ -111,49 +124,47 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                $medecin = null;
 
                try {
-                  $medecin = $em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
+                  $medecin = $this->em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
 
                   if(!$this->IsNullOrEmpty($medecin))                                    
                   {
-                      $synchronizationLine->setMessage("Medecin ID: ".$medecin->getId()." Nom: ".$medecin->getNom());
-                      $em->remove($medecin); 
-                      $em->flush();                   
+                      $this->synchronizationLine->setMessage("Medecin ID: ".$medecin->getId()." Nom: ".$medecin->getNom());
+                      $this->em->remove($medecin); 
+                      $this->em->flush();                   
                   } else {
-                    $synchronizationLine->setMessage("Le medecin avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
-                    $error = -1;
+                    $this->synchronizationLine->setMessage("Le medecin avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
+                    $this->error = -1;
                   }
                 } catch(\Exception $e) {
 
-                  $synchronizationLine->setMessage($e->getMessage());
-                  $error = $e->getCode(); 
-
-                  $logger->err("An error occured while deleting the following medecin: ".$nom);
-                  $logger->err($e->getMessage());
+                  $this->logger->err("An error occured while deleting the following medecin: ".$nom);
+                  $this->logger->err($e->getMessage());
                 } 
 
                break;    
            default:
-
-               $synchronizationLine->setMessage("L'opération fourni est invalide pour le dossier ".$id.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
-               $error = -1;
+               $this->logger->err("Invalid  action ".$action);
+               $this->synchronizationLine->setMessage("L'opération fourni est invalide pour le dossier ".$id.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
+               $this->error = -1;
 
                break;
        }
 
-       try {
-            $synchronizationLine->setCommand($action);
-            $synchronizationLine->setTableId($id);     
-            $synchronizationLine->setReturnCode($error);                     
-            $em->persist($synchronizationLine);
-            $em->flush();      
+       // Save synchronization line
+       try {        
+            $this->synchronizationLine->setCommand($action);
+            $this->synchronizationLine->setTableId($id);     
+            $this->synchronizationLine->setReturnCode($this->error);                     
+            $this->em->persist($this->synchronizationLine);
+            $this->em->flush();      
                  
         } catch (\Exception $e) {
-            $logger->err("An error occured during the save of the SynchronizationLine.");
-            $logger->err($e->getMessage());
-            $error = $e->getCode();
+            $this->logger->err("An error occured during the save of the SynchronizationLine.");
+            $this->logger->err($e->getMessage());
+            $this->error = $e->getCode();
         }
 
-        $output->writeln($error);
+        $output->writeln($this->error);
     }
 
     private function IsNullOrEmpty($value)

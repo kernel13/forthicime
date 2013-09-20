@@ -107,8 +107,8 @@ log.info "======================================================================
 	sorted_files = Dir.glob(orders + "/*#{w}_Client*.csv").sort!{|a,b| File.mtime(a) <=> File.mtime(b) }	
 	#Dir.glob(orders + "/*#{w}_Client*.csv") do |file|
 	sorted_files.each do |file|
-		i += 1
-		#if file.include?("Client")
+		begin
+			i += 1			
 			puts file
 			log.debug "Read file #{file}"
 			action = File.open(file).read
@@ -122,11 +122,15 @@ log.info "======================================================================
 			puts "Upate Client: " + a.split('_').first
 			log.debug "Running: #{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
 			puts "#{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID} --env=#{env}"
-			`#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom.chomp}" #{synchronizaitonID} --env=#{env}`
-			
+			output = `#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom.chomp}" #{synchronizaitonID} --env=#{env}`
+			log.info "output = #{output}"
+
 			log.info "Move file #{file}"
 			FileUtils.move(file, processed)	
 			log.info "--------------------------------------------------------------------------------"
+		rescue
+			log.info "An error occured while computing #{file}"
+		end
 	end
 end
 log.info "================================================================================"
@@ -145,7 +149,7 @@ log.info "======================================================================
 	sorted_files = Dir.glob(orders + "/*#{w}_Medecin*.csv").sort!{|a,b| File.mtime(a) <=> File.mtime(b) }	
 	#Dir.glob(orders + "/*#{w}_Medecin*.csv") do |file|
 	sorted_files.each do |file|
-		#elsif file.include?("Medecin")
+		begin
 			i += 1
 			
 			puts file
@@ -162,11 +166,15 @@ log.info "======================================================================
 			log.debug "Running: #{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
 			puts "#{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID} --env=#{env}"
 
-			`#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}" #{synchronizaitonID} --env=#{env}` 
+			output = `#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}" #{synchronizaitonID} --env=#{env}` 
+			log.info "output = #{output}"
 
 			log.info "Move file #{file}"
 			FileUtils.move(file, processed)	
 			log.info "--------------------------------------------------------------------------------"
+		rescue	
+			log.info "An error occured while computing #{file}"
+		end
 	end
 end
 log.info "================================================================================"
@@ -186,8 +194,8 @@ log.info "======================================================================
 	sorted_files = Dir.glob(orders + "/*#{w}_Dossier*.csv").sort!{|a,b| File.mtime(a) <=> File.mtime(b) }	
 	#Dir.glob(orders + "/*#{w}_Dossier*.csv") do |file|
 	sorted_files.each do |file|
-		#elsif file.include?("Dossier")
-
+		
+		begin
 			i += 1
 			puts file
 			log.debug "Read file #{file}"
@@ -205,12 +213,16 @@ log.info "======================================================================
 			puts "#{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID} --env=#{env}"
 
 			log.debug "Running: #{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
-			`#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}" #{synchronizaitonID} --env=#{env}`
-			
+			output = `#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}" #{synchronizaitonID} --env=#{env}`
+			log.info "output = #{output}"
+
 			log.info "Move file #{file}"
 			FileUtils.move(file, processed)	
 			log.info "--------------------------------------------------------------------------------"
-		#end
+		rescue
+			log.info "An error occured while computing #{file}"
+		end
+
 	end
 end 
 
@@ -219,7 +231,8 @@ log.info "#{i} dossier(s) where updated													  "
 log.info "================================================================================"
 
 log.info "Running: #{command} EndSynchronization #{synchronizaitonID}"
-`#{command} EndSynchronization #{synchronizaitonID} --env=#{env}`
+output = `#{command} EndSynchronization #{synchronizaitonID} --env=#{env}`
+log.info "output = #{output}"
 
 
 log.info "================================================================================"

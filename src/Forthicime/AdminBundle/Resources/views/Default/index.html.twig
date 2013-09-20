@@ -12,7 +12,10 @@
 	{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 		 <span><i class="icon-home icon-white"> </i> <a href="{{ path('forthicime_admin_homepage') }}">Accueil</a></span>
 		 <span><i class="icon-refresh icon-white"> </i> <a href="{{ path('forthicime_synchronization') }}">Synchronisation</a></span>		 
+		 <span id="changePwd"><a href="#">Changer le mot de passe</a></span>
          <span><i class="icon-minus-sign icon-white"> </i> <a href="{{ path('logout') }}">Se déconnecter</a></span>
+
+
      
      {% endif %}
 {% endblock %}
@@ -23,6 +26,7 @@
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script src="{{ asset('bundles/forthicimeadmin/js/CharBar.js') }}"></script>
 	<script src="{{ asset('bundles/forthicimeadmin/js/MonthChar.js') }}"></script>
+	<script src="{{ asset('bundles/forthicimeadmin/js/Password.js') }}"></script>
 
 	<div class="span4">
 
@@ -121,6 +125,13 @@
 
 					monthChart.drawChart(year, month);  
   				});
+
+  				$(function(){
+					$("#changePwd").click(function(){
+						 var pwd = new Password();
+						 pwd.displayForm();
+					});
+				});
 
 	
 	    </script>

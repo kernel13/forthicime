@@ -69,3 +69,10 @@ swiftmailer:
     username:  %mailer_user%
     password:  %mailer_password%
     spool:     { type: memory }
+monolog:
+    handlers:
+        main:
+            type: rotating_file
+            max_files: 10
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: error
