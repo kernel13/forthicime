@@ -19,6 +19,13 @@ class UpdateClientsCommand extends ContainerAwareCommand
     private $logger;
     private $error;
 
+    function __construct() {
+      $this->synchronizationLine = new SynchronizationLine();
+      $this->em = $this->getContainer()->get('doctrine')->getManager();
+      $this->logger = $this->getContainer()->get('logger');
+      $this->error = 0;
+    }
+
     protected function configure()
     {
         $this
@@ -29,12 +36,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
             ->addArgument('nom', InputArgument::REQUIRED, 'Nom du client')
             ->addArgument('prenom', InputArgument::REQUIRED, 'Prenom du client')
             ->addArgument('nomPrenom', InputArgument::REQUIRED, 'nom prenom du client')
-            ->addArgument('synchronizationID', InputArgument::REQUIRED, 'identifant de la synchronization en cours');
-
-			  $this->synchronizationLine = new SynchronizationLine();
-        $this->em = $this->getContainer()->get('doctrine')->getManager();
-        $this->logger = $this->getContainer()->get('logger');
-        $this->error = 0;
+            ->addArgument('synchronizationID', InputArgument::REQUIRED, 'identifant de la synchronization en cours');		
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

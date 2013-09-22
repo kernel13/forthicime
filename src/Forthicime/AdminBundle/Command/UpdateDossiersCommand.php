@@ -26,6 +26,13 @@ class UpdateDossiersCommand extends ContainerAwareCommand
     private $logger;
     private $error;
 
+    function __construct() {
+      $this->synchronizationLine = new SynchronizationLine();
+      $this->em = $this->getContainer()->get('doctrine')->getManager();
+      $this->logger = $this->getContainer()->get('logger');
+      $this->error = 0;
+    }
+
     protected function configure()
     {
         $this
@@ -38,11 +45,7 @@ class UpdateDossiersCommand extends ContainerAwareCommand
             ->addArgument('client', InputArgument::REQUIRED, 'Who do you want to greet?')            
             ->addArgument('libelle', InputArgument::REQUIRED, 'Who do you want to greet?')
             ->addArgument('synchronizationID', InputArgument::REQUIRED, 'Who do you want to greet?');
-  
-        $this->synchronizationLine = new SynchronizationLine();
-        $this->em = $this->getContainer()->get('doctrine')->getManager();
-        $this->logger = $this->getContainer()->get('logger');
-        $this->error = 0;
+        
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

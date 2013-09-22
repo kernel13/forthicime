@@ -19,6 +19,13 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
     private $logger;
     private $error;
 
+    function __construct() {
+      $this->synchronizationLine = new SynchronizationLine();
+      $this->em = $this->getContainer()->get('doctrine')->getManager();
+      $this->logger = $this->getContainer()->get('logger');
+      $this->error = 0;
+    }
+
     protected function configure()
     {
         $this
@@ -29,12 +36,7 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
             ->addArgument('name', InputArgument::REQUIRED, 'Who do you want to greet?')
             ->addArgument('username', InputArgument::REQUIRED, 'Who do you want to greet?')
             ->addArgument('password', InputArgument::REQUIRED, 'Who do you want to greet?')
-            ->addArgument('synchronizationID', InputArgument::REQUIRED, 'Who do you want to greet?');
-
-        $this->synchronizationLine = new SynchronizationLine();
-        $this->em = $this->getContainer()->get('doctrine')->getManager();
-        $this->logger = $this->getContainer()->get('logger');
-        $this->error = 0;
+            ->addArgument('synchronizationID', InputArgument::REQUIRED, 'Who do you want to greet?');    
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
