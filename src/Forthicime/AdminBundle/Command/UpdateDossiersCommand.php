@@ -21,22 +21,14 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class UpdateDossiersCommand extends ContainerAwareCommand
 {
-    private $synchronizationLine;
-    private $em;
-    private $logger;
-    private $error;
-
-    function __construct() {
-      $this->synchronizationLine = new SynchronizationLine();
-      $this->em = $this->getContainer()->get('doctrine')->getManager();
-      $this->logger = $this->getContainer()->get('logger');
-      $this->error = 0;
-    }
+    private $_synchronizationLine;
+    private $_em;
+    private $_logger;
+    private $_error;
 
     protected function configure()
     {
-        $this
-            ->setName('UpdateDossiers')
+        $this->setName('UpdateDossiers')
             ->setDescription('Recupere les meta donnee des analyse et met a jour la base de donnee')
             ->addArgument('action', InputArgument::REQUIRED, 'Who do you want to greet?')
             ->addArgument('id', InputArgument::REQUIRED, 'Who do you want to greet?') 
@@ -58,34 +50,36 @@ class UpdateDossiersCommand extends ContainerAwareCommand
        $action = $input->getArgument('action');
        $synchronizationID = $input->getArgument('synchronizationID');
 
-       $m = null;
-       $c = null;
-     
-       $this->logger->info("Working on ".$libelle);
+       $this->_synchronizationLine = new SynchronizationLine();
+       $this->_em = $this->getContainer()->get('doctrine')->getManager();
+       $this->_logger = $this->getContainer()->get('logger');
+       $this->_error = 0;
+    
+       $this->_logger->info("Working on ".$libelle);
       
        // Retrieve the current synchronization
-       $synchronization = $this->em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
+       $synchronization = $this->_em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
 
        if($this->IsNullOrEmpty($synchronization))
          throw new \Exception("La synchronization en cours ne peut etre récupéré", -201);
 
-       // Initialize synchronizationLine object
-       $this->synchronizationLine->setSynchronization($synchronization);
-       $this->synchronizationLine->setTableName("dossier");
+       // Initialize _synchronizationLine object
+       $this->_synchronizationLine->setSynchronization($synchronization);
+       $this->_synchronizationLine->setTableName("dossier");
 
-       $this->logger->info("Action: ".$action);
+       $this->_logger->info("Action: ".$action);
 
-       switch ($action) {
+       switch ($action) 
+       {
            case 'Ajout':
 
                $dossier = new Dossier();
 
-               if( !$this->IsNullOrEmpty($this->GetMedecin($medecin)) && 
-                    !$this->IsNullOrEmpty($this->GetClient($client)) )
+               if( !$this->IsNullOrEmpty($this->GetMedecin($medecin)) && !$this->IsNullOrEmpty($this->GetClient($client)) )
                {
                    // Add the dossier
                    try {
-                       $d = $this->em->getRepository('ForthicimeDossierBundle:Dossier')->find($id);
+                       $d = $this->_em->getRepository('ForthicimeDossierBundle:Dossier')->find($id);
                        if( $this->IsNullOrEmpty($d) ) { 
                            $dossier->setId($id);
                            $dossier->setMedecin($m);              
@@ -93,14 +87,14 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                            $dossier->setNumeric($numeric);
                            $dossier->setLibelle($libelle);  
 
-                           $this->em->persist($dossier);
-                           $this->em->flush();               
+                           $this->_em->persist($dossier);
+                           $this->_em->flush();               
                        } else {
-                           $this->synchronizationLine->setMessage("Le dossier avec l'ID ".$id." existe déjá");
+                           $this->_synchronizationLine->setMessage("Le dossier avec l'ID ".$id." existe déjá");
                        } 
                     } catch(\Exception $e) {                     
-                      $this->logger->err("An error occured during the save of the analysis ".$id);
-                      $this->logger->err($e->getMessage());
+                      $this->_logger->err("An _error occured during the save of the analysis ".$id);
+                      $this->_logger->err($e->getMessage());
                     } 
                 }
 
@@ -110,12 +104,11 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                
                $dossier = null;
 
-              if( !$this->IsNullOrEmpty($this->GetMedecin($medecin)) && 
-                  !$this->IsNullOrEmpty($this->GetClient($client)))
+              if( !$this->IsNullOrEmpty($this->GetMedecin($medecin)) && !$this->IsNullOrEmpty($this->GetClient($client)))
               {
                  // Modify the dossier
                  try{                
-                     $dossier = $this->em->getRepository('\Forthicime\DossierBundle\Entity\Dossier')->find($id);        
+                     $dossier = $this->_em->getRepository('\Forthicime\DossierBundle\Entity\Dossier')->find($id);        
 
                      if(!$this->IsNullOrEmpty($dossier))                                    
                      { 
@@ -124,15 +117,15 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                        $dossier->setNumeric($numeric);
                        $dossier->setLibelle($libelle);   
 
-                       $this->em->flush();                  
+                       $this->_em->flush();                  
                      } else {
-                        $this->synchronizationLine->setMessage("L'analyse avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
-                        $this->error = -1;
+                        $this->_synchronizationLine->setMessage("L'analyse avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
+                        $this->_error = -1;
                      }
 
                 } catch(\Exception $e) {                  
-                    $this->logger->err("An error occured during the save of the analysis ".$id);
-                    $this->logger->err($e->getMessage());
+                    $this->_logger->err("An _error occured during the save of the analysis ".$id);
+                    $this->_logger->err($e->getMessage());
                 } 
               }
 
@@ -143,50 +136,50 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                $dossier = null;
 
                try{
-                  $dossier = $this->em->getRepository('ForthicimeDossierBundle:Dossier')->find($id);
+                  $dossier = $this->_em->getRepository('ForthicimeDossierBundle:Dossier')->find($id);
 
                   if(!$this->IsNullOrEmpty($dossier))                                    
                   { 
-                     $this->synchronizationLine->setMessage("Dossier ID: ".$dossier->getId()." Libelle: ".$dossier->getNom());
-                     $this->em->remove($dossier);
-                     $this->em->flush();  
+                     $this->_synchronizationLine->setMessage("Dossier ID: ".$dossier->getId()." Libelle: ".$dossier->getNom());
+                     $this->_em->remove($dossier);
+                     $this->_em->flush();  
                   } else {
-                    $this->synchronizationLine->setMessage("L'analyse avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
-                    $this->error = -1;
+                    $this->_synchronizationLine->setMessage("L'analyse avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
+                    $this->_error = -1;
                   }
                 }catch(\Exception $e){
-                  $this->logger->err("An error occured during the delete of the Dossier ".$id);
-                  $this->logger->err($e->getMessage());
-                  $this->error = $e->getCode();
+                  $this->_logger->err("An _error occured during the delete of the Dossier ".$id);
+                  $this->_logger->err($e->getMessage());
+                  $this->_error = $e->getCode();
                 } 
 
                break;    
            default:
-              $this->logger->err("Invalid  action ".$action);
-              $this->synchronizationLine->setMessage("L'opération fourni est invalide pour le dossier ".$id.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
-              $this->error = -1;
+              $this->_logger->err("Invalid  action ".$action);
+              $this->_synchronizationLine->setMessage("L'opération fourni est invalide pour le dossier ".$id.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
+              $this->_error = -1;
 
                break;
        }
 
         try {
             
-            $this->synchronizationLine->setCommand($action);
-            $this->synchronizationLine->setTableId($id);     
-            $this->synchronizationLine->setReturnCode($this->error);                     
-            $this->em->persist($this->synchronizationLine);
-            $this->em->flush();      
+            $this->_synchronizationLine->setCommand($action);
+            $this->_synchronizationLine->setTableId($id);     
+            $this->_synchronizationLine->setReturnCode($this->_error);                     
+            $this->_em->persist($this->_synchronizationLine);
+            $this->_em->flush();      
                  
         } catch (\Exception $e) {
-            $this->logger->err("An error occured during the save of the SynchronizationLine.");
-            $this->logger->err($e->getMessage());
-            $this->error = $e->getCode();
+            $this->_logger->err("An _error occured during the save of the _synchronizationLine.");
+            $this->_logger->err($e->getMessage());
+            $this->_error = $e->getCode();
         }
 
-        $output->writeln($this->error);
+        $output->writeln($this->_error);
     }
 
-     private function IsNullOrEmpty($value)
+    private function IsNullOrEmpty($value)
     {
         $isNull = false;
 
@@ -208,18 +201,18 @@ class UpdateDossiersCommand extends ContainerAwareCommand
         $m = null;
 
        try {
-            $m = $this->em->getRepository('ForthicimeMedecinBundle:Medecin')->find($medecin);
+            $m = $this->_em->getRepository('ForthicimeMedecinBundle:Medecin')->find($medecin);
 
             if( $this->IsNullOrEmpty($m)){
-               $this->synchronizationLine->setMessage("Le medecin avec l'ID ".$medecin." n'a pas été trouvé");
-               $this->error = -1;  
+               $this->_synchronizationLine->setMessage("Le medecin avec l'ID ".$medecin." n'a pas été trouvé");
+               $this->_error = -1;  
             }
                                 
        } catch (\Exception $e) {                  
-            $this->logger->err($e->getMessage());
+            $this->_logger->err($e->getMessage());
        }  
 
-       return $m   
+       return $m;  
     }
 
     //Find a client by ID
@@ -228,15 +221,15 @@ class UpdateDossiersCommand extends ContainerAwareCommand
       $c = null;
 
       try {        
-            $c = $this->em->getRepository('ForthicimeClientBundle:Client')->find($client);    
+            $c = $this->_em->getRepository('ForthicimeClientBundle:Client')->find($client);    
 
             if( $this->IsNullOrEmpty($c) ){
-                $this->synchronizationLine->setMessage("Client avec l'ID ".$client." n'a pas été trouvé");  
-                $this->error = -1;
+                $this->_synchronizationLine->setMessage("Client avec l'ID ".$client." n'a pas été trouvé");  
+                $this->_error = -1;
             }
             
        } catch (\Exception $e) {                  
-          $this->logger->err($e->getMessage());
+          $this->_logger->err($e->getMessage());
        }
 
        return $c;

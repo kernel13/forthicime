@@ -10,21 +10,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Forthicime\ClientBundle\Entity\Client;
 use Forthicime\AdminBundle\Entity\SynchronizationLine;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 
 class UpdateClientsCommand extends ContainerAwareCommand
 {
-    private $synchronizationLine;
-    private $em;
-    private $logger;
-    private $error;
-
-    function __construct() {
-      $this->synchronizationLine = new SynchronizationLine();
-      $this->em = $this->getContainer()->get('doctrine')->getManager();
-      $this->logger = $this->getContainer()->get('logger');
-      $this->error = 0;
-    }
+    private $_synchronizationLine;
+    private $_em;
+    private $_logger;
+    private $_error;
 
     protected function configure()
     {
@@ -48,19 +42,25 @@ class UpdateClientsCommand extends ContainerAwareCommand
        $action = $input->getArgument('action');
        $synchronizationID = $input->getArgument('synchronizationID');
 
-       $this->logger->info("working on ".$nom." ".$prenom);
+
+       $this->_synchronizationLine = new SynchronizationLine();
+       $this->_em = $this->getContainer()->get('doctrine')->getManager();
+       $this->_logger = $this->getContainer()->get('logger');
+       $this->_error = 0;
+
+       $this->_logger->info("working on ".$nom." ".$prenom);
 
        // Find current synchronization
-       $synchronization = $this->em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
+       $synchronization = $this->_em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
 
        if($this->IsNullOrEmpty($synchronization))
          throw new \Exception("La synchronization en cours ne peut etre récupéré", -201);
 
        // Initialize synchronization line
-       $this->synchronizationLine->setSynchronization($synchronization);
-       $this->synchronizationLine->setTableName("client");
+       $this->_synchronizationLine->setSynchronization($synchronization);
+       $this->_synchronizationLine->setTableName("client");
 
-       $this->logger->info("Action: ".$action);
+       $this->_logger->info("Action: ".$action);
 
        // Run action
        switch ($action) {
@@ -70,51 +70,51 @@ class UpdateClientsCommand extends ContainerAwareCommand
 
                try {      
 
-                   $c = $this->em->getRepository('ForthicimeClientBundle:Client')->find($client);    
+                   $c = $this->_em->getRepository('ForthicimeClientBundle:Client')->find($client);    
                   
                   if( $this->IsNullOrEmpty($c) ){
                    $client->setId($id);
                    $client->setNom($nom);
                    $client->setPrenom($prenom);
                    $client->setNomPrenom($nomPrenom);
-                   $this->em->persist($client);   
-                   $this->em->flush(); 
+                   $this->_em->persist($client);   
+                   $this->_em->flush(); 
                  } else {
-                    $this->synchronizationLine->setMessage("Le patient avec l'ID ".$id." existe déjà");
+                    $this->_synchronizationLine->setMessage("Le patient avec l'ID ".$id." existe déjà");
                  }
                                           
                } catch(\Exception $e) {
-                  $this->logger->err("An error occured while adding the following client: ".$nom." ".$prenom);
-                  $this->logger->err($e->getMessage());
-                  $this->error = $e->getCode();                  
+                  $this->_logger->err("An _error occured while adding the following client: ".$nom." ".$prenom);
+                  $this->_logger->err($e->getMessage());
+                  $this->_error = $e->getCode();                  
                }
               
                break;
            
            case 'Modif':
-                // Create a new synchronizationLine
+                // Create a new _synchronizationLine
                $client = null;
                $oldValue = "";
 
                try {
 
-                  $client = $this->em->getRepository('ForthicimeClientBundle:Client')->find($id);
+                  $client = $this->_em->getRepository('ForthicimeClientBundle:Client')->find($id);
 
                   if(!$this->IsNullOrEmpty($client))                                    
                   { 
                     $client->setNom($nom);
                     $client->setPrenom($prenom);
                     $client->setNomPrenom($nomPrenom);
-                    $this->em->flush();  
+                    $this->_em->flush();  
                   } else {
-                    $this->synchronizationLine->setMessage("Le client avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
-                    $this->error = -1;
+                    $this->_synchronizationLine->setMessage("Le client avec l'ID ".$id." n'a pas été trouvé et ne peut donc être modifié");
+                    $this->_error = -1;
                   }
                } catch(\Exception $e) {  
 
-                  $this->logger->err("An error occured while modifying the following client: ".$nom." ".$prenom);
-                  $this->logger->err($e->getMessage());
-                  $this->error = $e->getCode();
+                  $this->_logger->err("An _error occured while modifying the following client: ".$nom." ".$prenom);
+                  $this->_logger->err($e->getMessage());
+                  $this->_error = $e->getCode();
                 } 
        
                break;
@@ -124,7 +124,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
                $client = new Client();
                $serializedClient = "";
                try {
-                      $client = $this->em->getRepository('ForthicimeClientBundle:Client')->find($id);                  
+                      $client = $this->_em->getRepository('ForthicimeClientBundle:Client')->find($id);                  
                       if(!$this->IsNullOrEmpty($client))                                    
                       { 
                           $dossiers = $client->getDossiers();
@@ -133,44 +133,44 @@ class UpdateClientsCommand extends ContainerAwareCommand
                        		   $client->removeDossiers($dossier);
                           }
 
-                          $this->synchronizationLine->setMessage("Client ID: ".$client->getId()." Nom: ".$client->getNomPrenom());
+                          $this->_synchronizationLine->setMessage("Client ID: ".$client->getId()." Nom: ".$client->getNomPrenom());
 
-                          $this->em->remove($client);      
+                          $this->_em->remove($client);      
                       } else {
-                        $this->synchronizationLine->setMessage("Le client avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
-                        $this->error = -1;
+                        $this->_synchronizationLine->setMessage("Le client avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
+                        $this->_error = -1;
                       }                
                   } catch(\Exception $e) {
 
-                    $this->logger->err("An error occured while deleting the following client: ".$nom." ".$prenom);
-                    $this->logger->err($e->getMessage());
-                    $this->error = $e->getCode();
+                    $this->_logger->err("An _error occured while deleting the following client: ".$nom." ".$prenom);
+                    $this->_logger->err($e->getMessage());
+                    $this->_error = $e->getCode();
 
                   } 
                break;    
            default:             
-               $this->logger->err("Invalid  action ".$action);
-               // Create a new synchronizationLine                             
-               $this->synchronizationLine->setMessage("L'opération fourni est invalide pour le client ".$nom." ".$prenom.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
-               $this->error = -1;
+               $this->_logger->err("Invalid  action ".$action);
+               // Create a new _synchronizationLine                             
+               $this->_synchronizationLine->setMessage("L'opération fourni est invalide pour le client ".$nom." ".$prenom.". L'opération attendue est: Ajout, Modif ou Supprime et a obtenue: ".$action);               
+               $this->_error = -1;
                break;
        }
 
        try {
 
-            $this->synchronizationLine->setCommand($action);
-            $this->synchronizationLine->setTableId($id);     
-            $this->synchronizationLine->setReturnCode($this->error);                     
-            $this->em->persist($this->synchronizationLine);
-            $this->em->flush();      
+            $this->_synchronizationLine->setCommand($action);
+            $this->_synchronizationLine->setTableId($id);     
+            $this->_synchronizationLine->setReturnCode($this->_error);                     
+            $this->_em->persist($this->_synchronizationLine);
+            $this->_em->flush();      
                  
         } catch (\Exception $e) {
-            $this->logger->err("An error occured during the save of the SynchronizationLine.");
-            $this->logger->err($e->getMessage());
-            $this->error = $e->getCode();
+            $this->_logger->err("An _error occured during the save of the _synchronizationLine.");
+            $this->_logger->err($e->getMessage());
+            $this->_error = $e->getCode();
         }
 
-        $output->writeln($this->error);
+        $output->writeln($this->_error);
     }
 
     private function IsNullOrEmpty($value)

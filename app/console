@@ -1,4 +1,4 @@
-#!/Users/stephane/Sites/Forthicime/php
+#!/usr/bin/php
 <?php
 
 // if you don't want to setup permissions the proper way, just uncomment the following PHP line
