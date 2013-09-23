@@ -80,7 +80,7 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                      $this->_em->persist($medecin);
                      $this->_em->flush();   
                  } else {
-                    if( $m->getNom() == $nom ){
+                    if( strtolower($m->getIdentifiant()) == strtolower($username) ){
                       $this->_synchronizationLine->setMessage("Medecin déjà présent dans la base");
                     } else {
                       $this->_synchronizationLine->setMessage("Identifiant déjà existant: ID: ".$id." Nom: ".$m->getNom());

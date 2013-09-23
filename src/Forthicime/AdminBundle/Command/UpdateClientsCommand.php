@@ -82,7 +82,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
                    $this->_em->persist($client);   
                    $this->_em->flush(); 
                  } else {   
-                    if ( $c->getNom() == $nom && $c->getPrenom() == $prenom ) {
+                    if ( strtolower($c->getNom()) == strtolower($nom) && strtolower($c->getPrenom()) == strtolower($prenom) ) {
                       $this->_synchronizationLine->setMessage("Patient déjà présent dans la base");
                     } else {
                       $this->_synchronizationLine->setMessage("Identifiant déjà existant: ID: ".$id." Nom: ".$c->getNom()." prenom: ".$c->getPrenom());
