@@ -23,7 +23,7 @@ function SynchronizationDetail(path, synchId)
 	}
 
 	function Run()
-	{
+	{		
 		if($("#document>div").length > 2)
 		{
 			$("#document>div:first-child").animate({width: '0'}, function(){
@@ -36,7 +36,7 @@ function SynchronizationDetail(path, synchId)
 
 					$("#syncTime").append("<p>Synchronisation: " + data[0].SynchTime.date + "</p>")
 
-					__self.filter();
+					__self.filter();					
 				});	
 			});
 		} else {
@@ -46,7 +46,7 @@ function SynchronizationDetail(path, synchId)
 				
 				  	$( "#tabs" ).tabs({ active: 0 });
 					$("#ui-tabs-1").html(__self.BuildHtml(data));	
-					__self.filter();
+					__self.filter();					
 				});
 		}	
 	}
