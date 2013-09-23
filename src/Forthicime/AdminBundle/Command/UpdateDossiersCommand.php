@@ -74,8 +74,10 @@ class UpdateDossiersCommand extends ContainerAwareCommand
            case 'Ajout':
 
                $dossier = new Dossier();
+               $m = $this->GetMedecin($medecin);
+               $c = $this->GetClient($client);
 
-               if( !$this->IsNullOrEmpty($this->GetMedecin($medecin)) && !$this->IsNullOrEmpty($this->GetClient($client)) )
+               if( !$this->IsNullOrEmpty($m) && !$this->IsNullOrEmpty($c) )
                {
                    // Add the dossier
                    try {
@@ -93,7 +95,7 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                            if( $d->getLibelle() == $libelle ) {
                                 $this->_synchronizationLine->setMessage("Analyse déjà présente dans la base.");
                            } else {
-                              $this->_synchronizationLine->setMessage("Identifant déjà existant. ID: ".$id." libellé: ".$d->getLibelle());
+                              $this->_synchronizationLine->setMessage("Une analyse avec le même identifiant existe. ID: ".$id." libellé: ".$d->getLibelle());
                               $this->_error = -1;   
                             }
                            
@@ -102,6 +104,19 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                       $this->_logger->err("An _error occured during the save of the analysis ".$id);
                       $this->_logger->err($e->getMessage());
                     } 
+                } else {
+                      $msg = "";
+                      if ( $this->IsNullOrEmpty($m) )
+                          $msg = "Le Medecin  n'a pas été trouvé dans la base de donnée. ID Medecin: ".$medecin;
+
+                      if ( $this->IsNullOrEmpty($c) )
+                          $msg = "Le Patient n'a pas été trouvé dans la base de donnée. ID Patient: ".$client;
+
+                      if( $this->IsNullOrEmpty($m) && $this->IsNullOrEmpty($c) )
+                          $msg = "Le patient (ID: ".$client.") et le medecin (ID: ".$medecin.") n'ont pas été trouvé dans la base";
+
+                      $this->_synchronizationLine->setMessage($msg);
+                      $this->_error = -1;                      
                 }
 
                break;
@@ -110,7 +125,10 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                
                $dossier = null;
 
-              if( !$this->IsNullOrEmpty($this->GetMedecin($medecin)) && !$this->IsNullOrEmpty($this->GetClient($client)))
+              $m = $this->GetMedecin($medecin);
+              $c = $this->GetClient($client);
+
+              if( !$this->IsNullOrEmpty($m) && !$this->IsNullOrEmpty($c))
               {
                  // Modify the dossier
                  try{                
@@ -147,7 +165,7 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                   if(!$this->IsNullOrEmpty($dossier))                                    
                   { 
                      $this->_synchronizationLine->setMessage("Dossier ID: ".$dossier->getId()." Libelle: ".$dossier->getNom());
-                     $this->_em->remove($dossier);
+                     $this->_em->remove($dossier);                     
                      $this->_em->flush();  
                   } else {
                     $this->_synchronizationLine->setMessage("L'analyse avec l'ID ".$id." n'a pas été trouvé et ne peut donc être supprimé");
