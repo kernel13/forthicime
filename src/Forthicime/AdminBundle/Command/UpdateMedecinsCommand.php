@@ -70,7 +70,7 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
 
                try{                 
 
-                 $m = $this->_em->getRepository('ForthicimeMedecinBundle:Medecin')->find($medecin);
+                 $m = $this->_em->getRepository('ForthicimeMedecinBundle:Medecin')->find($id);
 
                  if( $this->IsNullOrEmpty($m) ){
                      $medecin->setId($id);
@@ -80,7 +80,13 @@ class UpdateMedecinsCommand extends ContainerAwareCommand
                      $this->_em->persist($medecin);
                      $this->_em->flush();   
                  } else {
-                    $this->_synchronizationLine->setMessage("Le medecin avec l'ID ".$id." existe déjà");
+                    if( $m->getNom() == $nom ){
+                      $this->_synchronizationLine->setMessage("Medecin déjà présent dans la base");
+                    } else {
+                      $this->_synchronizationLine->setMessage("Identifiant déjà existant: ID: ".$id." Nom: ".$m->getNom());
+                      $this->_error = -1;
+                    }
+                   
                  }
                  
                 } catch(\Exception $e) {

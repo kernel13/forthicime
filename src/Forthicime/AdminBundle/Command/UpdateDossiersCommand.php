@@ -90,7 +90,13 @@ class UpdateDossiersCommand extends ContainerAwareCommand
                            $this->_em->persist($dossier);
                            $this->_em->flush();               
                        } else {
-                           $this->_synchronizationLine->setMessage("Le dossier avec l'ID ".$id." existe déjá");
+                           if( $d->getLibelle() == $libelle ) {
+                                $this->_synchronizationLine->setMessage("Analyse déjà présente dans la base.");
+                           } else {
+                              $this->_synchronizationLine->setMessage("Identifant déjà existant. ID: ".$id." libellé: ".$d->getLibelle());
+                              $this->_error = -1;   
+                            }
+                           
                        } 
                     } catch(\Exception $e) {                     
                       $this->_logger->err("An _error occured during the save of the analysis ".$id);

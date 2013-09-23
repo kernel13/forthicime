@@ -49,6 +49,8 @@ class UpdateClientsCommand extends ContainerAwareCommand
        $this->_error = 0;
 
        $this->_logger->info("working on ".$nom." ".$prenom);
+       $this->_logger->info("parameters: #id: ".$id." #nom: ".$nom." #prenom: ".$prenom." #action: ".$action." #synchronizationID: ".$synchronizationID );
+
 
        // Find current synchronization
        $synchronization = $this->_em->getRepository('ForthicimeAdminBundle:Synchronization')->find($synchronizationID);
@@ -70,7 +72,7 @@ class UpdateClientsCommand extends ContainerAwareCommand
 
                try {      
 
-                   $c = $this->_em->getRepository('ForthicimeClientBundle:Client')->find($client);    
+                   $c = $this->_em->getRepository('ForthicimeClientBundle:Client')->find($id);    
                   
                   if( $this->IsNullOrEmpty($c) ){
                    $client->setId($id);
@@ -79,8 +81,13 @@ class UpdateClientsCommand extends ContainerAwareCommand
                    $client->setNomPrenom($nomPrenom);
                    $this->_em->persist($client);   
                    $this->_em->flush(); 
-                 } else {
-                    $this->_synchronizationLine->setMessage("Le patient avec l'ID ".$id." existe déjà");
+                 } else {   
+                    if ( $c->getNom() == $nom && $c->getPrenom() == $prenom ) {
+                      $this->_synchronizationLine->setMessage("Patient déjà présent dans la base");
+                    } else {
+                      $this->_synchronizationLine->setMessage("Identifiant déjà existant: ID: ".$id." Nom: ".$c->getNom()." prenom: ".$c->getPrenom());
+                      $this->_error = -1;  
+                    }                
                  }
                                           
                } catch(\Exception $e) {
