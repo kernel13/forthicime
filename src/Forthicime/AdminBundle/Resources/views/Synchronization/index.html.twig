@@ -46,8 +46,8 @@
 				{% for sync in synchronizations %}
 						 <tr>
 						 	<td style="display: none"> {{ sync.id }} </td> 						
-						 	<td> {{ sync.start|date('Y-m-d H:i')  }} </td> 
-						 	<td> {{ sync.end|date('Y-m-d H:i')  }} </td> 
+						 	<td> {{ sync.start|date('d/m/Y H:i')  }} </td> 
+						 	<td> {{ sync.end|date('d/m/Y H:i')  }} </td> 
 						 	<td> {{ sync.nbTransaction  }} </td> 
 						 	<td> {{ sync.nbSuccess  }} </td> 
 						 	<td> {{ sync.nbFailure  }} </td> 

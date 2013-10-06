@@ -40,14 +40,14 @@ class SynchronizationLine
     /**
      * @var string
      *
-     * @ORM\Column(name="tableName", type="string")
+     * @ORM\Column(name="tableName", type="string", nullable=true)
      */
     private $tableName;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="tableId", type="integer")
+     * @ORM\Column(name="tableId", type="integer", nullable=true)
      */
     private $tableId;
 

@@ -34,7 +34,7 @@ function SynchronizationDetail(path, synchId)
 					$( "#tabs" ).tabs({ active: 0 });
 					$("#ui-tabs-1").html(__self.BuildHtml(data));	
 
-					$("#syncTime").append("<p>Synchronisation: " + data[0].SynchTime.date + "</p>")
+				//	$("#syncTime").append("<p>Synchronisation: " + data[0].SynchTime.date + "</p>")
 
 					__self.filter();					
 				});	

@@ -51,6 +51,7 @@ class SynchronizationController extends Controller
     public function synchronizationDetailAction($category, $synchronizationId)
     {
         $nom = "";
+        $logger = $this->get('logger');
 
         // ======================================
         // Get repository
@@ -67,35 +68,42 @@ class SynchronizationController extends Controller
 
         //$serializer = $this->get('serializer');
         //$syncData = $serializer->serialize($synchronizations, 'json');
+        $logger->info("======== debut ==========");
 
         $datas = array();
         foreach ($synchronizations as $key => $value) {
             $nom = "";
-            switch($value->getTableName())
-            {
-                case "medecin":
-                    $item = $em->getRepository('ForthicimeMedecinBundle:Medecin')
-                                   ->find( $value->getTableId() );
-                    if($item)
-                        $nom = $item->getNom();
+            $logger->info("======== start synchronizations ==========");       
 
-                    break;
-                case "client":
-                    $item = $em->getRepository('ForthicimeClientBundle:Client')
-                                   ->find( $value->getTableId() );
-                    if($item) 
-                        $nom = $item->getNom()." ".$item->getPrenom();                    
 
-                    break;
-                case "dossier":
-                    $item = $em->getRepository('ForthicimeDossierBundle:Dossier')
-                                   ->find( $value->getTableId() );
-                    if($item)
-                        $nom = $item->getLibelle();
+            if($value->getTableId())
+            {  
+                switch($value->getTableName())
+                {
+                    case "medecin":
+                        $item = $em->getRepository('ForthicimeMedecinBundle:Medecin')
+                                       ->find( $value->getTableId() );
+                        if($item)
+                            $nom = $item->getNom();
 
-                    break;
+                        break;
+                    case "client":
+                        $item = $em->getRepository('ForthicimeClientBundle:Client')
+                                       ->find( $value->getTableId() );
+                        if($item) 
+                            $nom = $item->getNom()." ".$item->getPrenom();                    
+
+                        break;
+                    case "dossier":
+                        $item = $em->getRepository('ForthicimeDossierBundle:Dossier')
+                                       ->find( $value->getTableId() );
+                        if($item)
+                            $nom = $item->getLibelle();
+
+                        break;
+                }
             }
-
+            $logger->info("======== end synchronizations ==========");
             $datas[] = array(
                     "id" => $value->getId(),
                     "command" => $value->getCommand(),
@@ -106,6 +114,8 @@ class SynchronizationController extends Controller
                     "SynchTime" => $synchronization->getStart()
                 );
         }
+
+         $logger->info("======== fin ==========");
 
         return new Response(json_encode($datas));  
     }

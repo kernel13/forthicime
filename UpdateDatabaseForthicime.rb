@@ -4,45 +4,52 @@ require 'logger'
 require 'iconv'
 require 'fileutils'
 
-env = ARGV[0] || 'dev'
-time = Time.now.getutc
-logName = "./app/logs/UpdateDatabaseForthicime#{env}_#{time}.log"
-log = Logger.new(logName, 'daily' );
-log.level = Logger::DEBUG
-
-log.info "================================================================================"
-log.info "Starting UpdateDatabaseForthicime..."
-log.info "================================================================================"
-
+# Use to force the encoding to UTF-8
 class String
   def force_encoding(enc)
     ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', self + ' ')[0..-2]
   end
 end
 
-puts "Running script for env=#{env}"
+
+env = ARGV[0] || 'dev'
+time = Time.now.getutc
+logName = "./app/logs/UpdateDatabaseForthicime#{env}_#{time}.log"
+log = Logger.new(logName, 'daily' );
+log.level = Logger::DEBUG
+
 
 if env == 'prod'
 
-	csv = '/kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/Admin/Analyses/FichierCSV'
-	orders = '/kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/Admin/Analyses/FichierCSV/Orders'
-	command = "php6 /kunden/homepages/32/d299567504/htdocs/laboratoire-marachlian/forthicime/current/app/console"
+	csv = "#{ENV['HOME']}/laboratoire-marachlian/Admin/Analyses/FichierCSV"
+	orders = "#{ENV['HOME']}/laboratoire-marachlian/Admin/Analyses/FichierCSV/Orders"
+	command = "php6 #{ENV['HOME']}/laboratoire-marachlian/forthicime/current/app/console"
+	logName = "#{ENV['HOME']}/laboratoire-marachlian/forthicime/current/app/logs/UpdateDatabaseForthicime#{env}_#{time}.log"
 
 else
 
 	csv = File.dirname(__FILE__) + '/Analyses/FichierCSV/csv'
 	orders = File.dirname(__FILE__) + '/Analyses/FichierCSV/Orders'
 	command = File.dirname(__FILE__) + "/app/console"
+	logName = "./app/logs/UpdateDatabaseForthicime#{env}_#{time}.log"
 
 end
 
-i = 0
 
-backup = csv + '/cvsBackup'	
+log.info "================================================================================"
+log.info "Starting UpdateDatabaseForthicime..."
+log.info "================================================================================"
+
+
+puts "Running script for env=#{env}"
+
+backup = csv + '/csvBackup'	
 processed = orders + '/processed'
+errorPath = orders + '/failure'
 
 Dir.mkdir(backup) unless Dir[backup] != nil 
 Dir.mkdir(processed) unless Dir[processed] != nil
+Dir.mkdir(errorPath) unless Dir[errorPath] != nil
 
 log.info "csv: #{csv}"
 log.info "orders: #{orders}"
@@ -71,14 +78,20 @@ end
 log.info "================================================================================"
 log.info " Generate file orders in progress...						  "
 log.info "================================================================================"
-log.info "There is currently #{Dir.glob(File.dirname(__FILE__) + '/*.csv').count} in #{File.dirname(__FILE__)}"
+log.info "There is currently #{Dir.glob(csv + '/*.csv').count} in #{csv}"
 log.info "================================================================================"
-
+i = 0
 Dir.glob(csv + '/*.csv') do |file|
 	File.open(file).read.each_line do |line|
-		i += 1;
-		order = orders + "/#{File.basename(file, '.csv')}_#{i}.csv"
-		File.open(order, 'w'){|f| f.write(line) }
+		begin			
+			if (line)			
+				i += 1
+				order = orders + "/#{File.basename(file, '.csv')}_#{i}.csv"
+				File.open(order, 'w'){|f| f.write(line) }
+			end
+		rescue Exception => e
+			log.error e.message
+		end
 	end
 
 	FileUtils.move(file, backup)
@@ -112,24 +125,42 @@ log.info "======================================================================
 			puts file
 			log.debug "Read file #{file}"
 			action = File.open(file).read
-
-			puts "Gets parameters"
-			log.debug "Read parameters from #{action}"
-			id, nom, idFth, prenom, nomPrenom = action.force_encoding("iso-8859-1").split(';')		
-
 			a = File.basename(file, '.csv')
-			log.debug "Update client #{a.split('_').first}"
-			puts "Upate Client: " + a.split('_').first
-			log.debug "Running: #{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
-			puts "#{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID} --env=#{env}"
-			output = `#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom.chomp}" #{synchronizaitonID} --env=#{env}`
-			log.info "output = #{output}"
 
-			log.info "Move file #{file}"
-			FileUtils.move(file, processed)	
+			if !action.strip().empty?
+				
+				puts "Gets parameters"
+				log.debug "Read parameters from #{action}"
+				id, nom, idFth, prenom, nomPrenom = action.force_encoding("iso-8859-1").split(';')		
+
+				if (!id.strip().empty? && !non.strip().empty? && !idFth.strip().empty? && !prenom.strip().empty? && !nomPrenom.strip().empty?)
+					
+					log.debug "Update client #{a.split('_').first}"
+					puts "Upate Client: " + a.split('_').first
+					log.debug "Running: #{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID}"
+					puts "#{command} UpdateClients #{a.split('_').first} #{id} '#{nom}' '#{prenom}' '#{nomPrenom.chomp}' #{synchronizaitonID} --env=#{env}"
+					output = `#{command} UpdateClients #{a.split('_').first} #{id} "#{nom}" "#{prenom}" "#{nomPrenom.chomp}" #{synchronizaitonID} --env=#{env}`
+					log.info "output = #{output}"
+
+					log.info "Move file #{file}"
+					FileUtils.move(file, processed)	
+					
+				else
+					#not all attribute where provided
+					log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{a.split('_')[1]} #{synchronizaitonID} 'Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}'"
+					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}"`
+					FileUtils.move(file, errorPath)
+				end
+			else				
+				#the order file was empty
+				log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Le fichier #{file} est vide'"
+				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide"`
+				FileUtils.move(file, errorPath)
+			end
 			log.info "--------------------------------------------------------------------------------"
-		rescue
-			log.info "An error occured while computing #{file}"
+		rescue Exception => e
+                        log.info "An error occured while computing #{file}"
+                        log.info e.message
 		end
 	end
 end
@@ -155,25 +186,41 @@ log.info "======================================================================
 			puts file
 			log.debug "Read file #{file}"
 			action = File.open(file).read
-
-			puts "Get parameters"
-			log.debug "Read parameters from #{action}"
-			id, nom, identifiant, password, idFth = action.force_encoding("iso-8859-1").split(';')
-
 			a = File.basename(file, '.csv')
-			log.debug "Update client #{a.split('_').first}"
-			puts "Update Medecin: " + a.split('_').first
-			log.debug "Running: #{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
-			puts "#{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID} --env=#{env}"
 
-			output = `#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}" #{synchronizaitonID} --env=#{env}` 
-			log.info "output = #{output}"
+			if !action.strip().empty?
+				puts "Get parameters"
+				log.debug "Read parameters from #{action}"
+				id, nom, identifiant, password, idFth = action.force_encoding("iso-8859-1").split(';')
 
-			log.info "Move file #{file}"
-			FileUtils.move(file, processed)	
+				if (!id.strip().empty? && !nom.strip().empty? && !identifiant.strip().empty? && !password.strip().empty? && !idFth.strip().empty?)
+					
+					log.debug "Update client #{a.split('_').first}"
+					puts "Update Medecin: " + a.split('_').first
+					log.debug "Running: #{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID}"
+					puts "#{command} UpdateMedecins #{a.split('_').first} #{id} '#{nom}' '#{identifiant}' '#{password}' #{synchronizaitonID} --env=#{env}"
+
+					output = `#{command} UpdateMedecins #{a.split('_').first} #{id} "#{nom}" "#{identifiant}" "#{password}" #{synchronizaitonID} --env=#{env}` 
+					log.info "output = #{output}"
+
+					log.info "Move file #{file}"
+					FileUtils.move(file, processed)	
+				else
+					#not all attribute where provided
+					log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}'"
+					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1]} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}"`
+					FileUtils.move(file, errorPath)
+				end
+			else
+				#the order file was empty
+				log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Le fichier #{file} est vide'"
+				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide"`
+				FileUtils.move(file, errorPath)
+			end
 			log.info "--------------------------------------------------------------------------------"
-		rescue	
-			log.info "An error occured while computing #{file}"
+		rescue Exception => e
+             log.info "An error occured while computing #{file}"
+             log.info e.message
 		end
 	end
 end
@@ -200,27 +247,43 @@ log.info "======================================================================
 			puts file
 			log.debug "Read file #{file}"
 			action = File.open(file).read
-
-			puts "Get parameters"
-			log.debug "Read parameters from #{action}"
-			id, numeric, medecin, client, libelle, idAutre = action.force_encoding("iso-8859-1").split(';')
-
-			puts "=======Client: " + client
-
 			a = File.basename(file, '.csv')
-			log.debug "Update dossier #{a.split('_').first}"
-			puts "Update Dossiers: " + a.split('_').first
-			puts "#{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID} --env=#{env}"
 
-			log.debug "Running: #{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
-			output = `#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}" #{synchronizaitonID} --env=#{env}`
-			log.info "output = #{output}"
+			if !action.strip().empty?
+				puts "Get parameters"
+				log.debug "Read parameters from #{action}"
+				id, numeric, medecin, client, libelle, idAutre = action.force_encoding("iso-8859-1").split(';')
 
-			log.info "Move file #{file}"
-			FileUtils.move(file, processed)	
+				if (id && numeric && medecin && client && libelle && idAutre)
+					puts "=======Client: " + client
+					
+					log.debug "Update dossier #{a.split('_').first}"
+					puts "Update Dossiers: " + a.split('_').first
+					puts "#{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID} --env=#{env}"
+
+					log.debug "Running: #{command} UpdateDossiers #{a.split('_').first} #{id} '#{numeric}' #{medecin} #{client} '#{libelle}' #{synchronizaitonID}"
+					output = `#{command} UpdateDossiers #{a.split('_').first} #{id} "#{numeric}" #{medecin} #{client} "#{libelle}" #{synchronizaitonID} --env=#{env}`
+					log.info "output = #{output}"
+
+					log.info "Move file #{file}"
+					FileUtils.move(file, processed)	
+				else
+					#not all attribute where provided
+					log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}'"
+					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}"`
+					FileUtils.move(file, errorPath)
+				end
+			else
+				#the order file was empty
+				log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Le fichier #{file} est vide'"
+				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide"`
+				FileUtils.move(file, errorPath)
+			end
+
 			log.info "--------------------------------------------------------------------------------"
-		rescue
-			log.info "An error occured while computing #{file}"
+		rescue Exception => e
+           log.info "An error occured while computing #{file}"
+           log.info e.message
 		end
 
 	end
