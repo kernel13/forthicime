@@ -133,7 +133,7 @@ log.info "======================================================================
 				log.debug "Read parameters from #{action}"
 				id, nom, idFth, prenom, nomPrenom = action.force_encoding("iso-8859-1").split(';')		
 
-				if (!id.strip().empty? && !non.strip().empty? && !idFth.strip().empty? && !prenom.strip().empty? && !nomPrenom.strip().empty?)
+				if (id && non && idFth && prenom && nomPrenom)
 					
 					log.debug "Update client #{a.split('_').first}"
 					puts "Upate Client: " + a.split('_').first
@@ -193,7 +193,7 @@ log.info "======================================================================
 				log.debug "Read parameters from #{action}"
 				id, nom, identifiant, password, idFth = action.force_encoding("iso-8859-1").split(';')
 
-				if (!id.strip().empty? && !nom.strip().empty? && !identifiant.strip().empty? && !password.strip().empty? && !idFth.strip().empty?)
+				if (id && nom && identifiant && password && idFth)
 					
 					log.debug "Update client #{a.split('_').first}"
 					puts "Update Medecin: " + a.split('_').first
