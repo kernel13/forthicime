@@ -26,10 +26,37 @@
                     if(BannerSingleton.getInstance().isHidden())
                     {
                         BannerSingleton.getInstance().setHidden();
+                        $("html, body").animate({ scrollTop: 260 }, "slow");
                     }
 
                     $(".hide-banner").click(function(){
                        BannerSingleton.getInstance().toggle(this);
+                    });
+
+
+                    $(document).on("click", "a.dossier_link", function(e){
+                        e.preventDefault();
+                        window.location.href = $(this).attr("href");
+
+                        // Remove last child if there are more than 12 li element
+                        if ($("ul#recent_read>li").length >= 12)
+                            $("ul#recent_read>li:last-child").remove();
+
+                        var dossierHref = "input[name$=dossierHref]";
+                        var dossierHrefVal = $(dossierHref).val();
+
+                        var clientName = "input[name$=clientName]";
+                        var clientNameVal= $(clientName).val();
+                        
+                        var dossierLibelle = "input[name$=dossierLibelle]";
+                        var dossierLibelleVal= $(dossierLibelle).val();
+
+                        d1 = new Date();
+                        var d = $.datepicker.formatDate('dd/mm/yy', d1);
+    
+                        // Add new element in front
+                        $("<li><a href='" + $(this).attr("href") + "'><div>" + clientNameVal + "</div><div>" + d + " " + d1.getHours() + ":" + d1.getMinutes() + "</div><div>" + dossierLibelleVal + "</div></a></li><span style='clear: both'> </span>").insertBefore("ul#recent_read>li:nth-child(3)");
+
                     });
 
 

@@ -61,11 +61,15 @@
 					</tr>
 
 				{% for dossier in dossiers %}
-						 <tr>
+						 <tr>											
 						 	<td> {{ dossier.created|date('d-m-Y H:i')  }}</td>	
 			 			 	<td> {{ dossier.libelle	 }}</td>			 			 					 		
 			 			 	<td>
-			 					<a href="{{ path('forthicime_dossier', { 'id': dossier.id }) }}">
+			 					<a id="dossier_{{dossier.id}}" class="dossier_link" href="{{ path('forthicime_dossier', { 'id': dossier.id }) }}">
+			 				
+						 		<input type="hidden" name="clientName" value="{{client|lower|capitalize}}" />
+						 		<input type="hidden" name="dossierLibelle" value="{{dossier.libelle}}" />
+
 						 		 <img style="width: 35px;" src="{{ asset('bundles/forthicimemedecin/images/dossier.png') }}" alt="Dossiers" />
 						 		 </a>
 			 			 	</td>

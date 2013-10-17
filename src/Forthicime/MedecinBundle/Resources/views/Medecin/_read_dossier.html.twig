@@ -1,4 +1,4 @@
-<ul class="panel nav nav-list" style="font-size: 8pt;">
+<ul id="recent_read" class="panel nav nav-list" style="font-size: 8pt;">
  	<li class="nav-header"><i class="icon-book icon-white"> </i> Analyses consultées</li>
  	<li>
 		<div style="font-weight: bold">Nom</div>
@@ -9,7 +9,7 @@
 	<li>
 		<a href="{{ path('forthicime_dossier', {'id': dossier.id }) }}"> 
 			<div>{{ dossier.nom|lower|capitalize  }} {{ dossier.prenom|lower|capitalize }}</div>
-			<div>{{ dossier.created|date('d-m-Y H:i')  }} </div>
+			<div>{{ dossier.access|date('d/m/Y H:i')  }} </div>
 			<div>{{ dossier.libelle }}</div>	
 		</a>
 		<span style="clear: both"/>

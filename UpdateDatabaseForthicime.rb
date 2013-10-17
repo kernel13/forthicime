@@ -11,13 +11,8 @@ class String
   end
 end
 
-
 env = ARGV[0] || 'dev'
 time = Time.now.getutc
-logName = "./app/logs/UpdateDatabaseForthicime#{env}_#{time}.log"
-log = Logger.new(logName, 'daily' );
-log.level = Logger::DEBUG
-
 
 if env == 'prod'
 
@@ -35,6 +30,8 @@ else
 
 end
 
+log = Logger.new(logName, 'daily' );
+log.level = Logger::DEBUG
 
 log.info "================================================================================"
 log.info "Starting UpdateDatabaseForthicime..."
@@ -84,10 +81,12 @@ i = 0
 Dir.glob(csv + '/*.csv') do |file|
 	File.open(file).read.each_line do |line|
 		begin			
-			if (line)			
+			if !line.strip().empty?			
 				i += 1
 				order = orders + "/#{File.basename(file, '.csv')}_#{i}.csv"
 				File.open(order, 'w'){|f| f.write(line) }
+			else
+				log.info "The current line is empty"
 			end
 		rescue Exception => e
 			log.error e.message
@@ -133,7 +132,7 @@ log.info "======================================================================
 				log.debug "Read parameters from #{action}"
 				id, nom, idFth, prenom, nomPrenom = action.force_encoding("iso-8859-1").split(';')		
 
-				if (id && non && idFth && prenom && nomPrenom)
+				if (id && nom && idFth && prenom && nomPrenom)
 					
 					log.debug "Update client #{a.split('_').first}"
 					puts "Upate Client: " + a.split('_').first
@@ -148,13 +147,13 @@ log.info "======================================================================
 				else
 					#not all attribute where provided
 					log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{a.split('_')[1]} #{synchronizaitonID} 'Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}'"
-					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}"`
+					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}" --env=#{env}`
 					FileUtils.move(file, errorPath)
 				end
 			else				
 				#the order file was empty
 				log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Le fichier #{file} est vide'"
-				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide"`
+				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide" --env=#{env}`
 				FileUtils.move(file, errorPath)
 			end
 			log.info "--------------------------------------------------------------------------------"
@@ -208,13 +207,13 @@ log.info "======================================================================
 				else
 					#not all attribute where provided
 					log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}'"
-					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1]} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}"`
+					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1]} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}" --env=#{env}`
 					FileUtils.move(file, errorPath)
 				end
 			else
 				#the order file was empty
 				log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Le fichier #{file} est vide'"
-				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide"`
+				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide" --env=#{env}`
 				FileUtils.move(file, errorPath)
 			end
 			log.info "--------------------------------------------------------------------------------"
@@ -270,13 +269,13 @@ log.info "======================================================================
 				else
 					#not all attribute where provided
 					log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}'"
-					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}"`
+					`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Un ou plusieurs attributs sont manquant. Le fichier csv #{file} contient les valeurs suivantes: #{action}" --env=#{env}`
 					FileUtils.move(file, errorPath)
 				end
 			else
 				#the order file was empty
 				log.error "#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} 'Le fichier #{file} est vide'"
-				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide"`
+				`#{command} AddMessage #{a.split('_').first} #{a.split('_')[1].downcase} #{synchronizaitonID} "Le fichier #{file} est vide" --env=#{env}`
 				FileUtils.move(file, errorPath)
 			end
 

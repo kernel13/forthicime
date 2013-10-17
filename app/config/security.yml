@@ -42,6 +42,7 @@ security:
             form_login:
                 login_path: /forthicime/login
                 check_path: /forthicime/login_check
+                require_previous_session: false
             logout:
                path: /forthicime/logout
                target: /forthicime
